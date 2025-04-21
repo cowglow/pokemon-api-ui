@@ -1,0 +1,13 @@
+services:
+  pokemon-api-ui-dev:
+    container_name: pokemon-api-ui-dev
+    working_dir: /app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app/
+    stdin_open: true
+    tty: true
