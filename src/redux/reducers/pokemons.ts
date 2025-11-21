@@ -63,7 +63,7 @@ export function getSelectedPokemonIndex(state: RootState) {
 }
 
 export const {
-    fetchPokemonsStart,
+     fetchPokemonsStart,
     fetchPokemonsSuccess,
     fetchPokemonsFailure,
     setSelectedPokemon,
