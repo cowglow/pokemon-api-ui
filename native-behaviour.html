@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Native Behaviour</title>
+</head>
+<body>
+<ul id="item-list">
+    <li>
+        <a href="#">Item 0</a>
+    </li>
+    <li>
+        <a href="#">Item 1</a>
+    </li>
+    <li>
+        <a href="#">Item 2</a>
+    </li>
+    <li>
+        <a href="#">Item 3</a>
+    </li>
+    <li>
+        <a href="#">Item 4</a>
+    </li>
+    <li>
+        <a href="#">Item 5</a>
+    </li>
+</ul>
+<span id="output"></span>
+<script>
+    const list = document.getElementById('item-list');
+    const links = document.querySelectorAll('a');
+    const output = document.getElementById('output');
+
+
+    links.forEach((link, index) => {
+        link.addEventListener('focus', (event) => {
+            event.preventDefault();
+            output.textContent = `You focused on Item ${index}`;
+        });
+    });
+
+    list.addEventListener("keydown", (event) => {
+        const active = document.activeElement;
+        const index = Array.from(links).indexOf(active);
+
+        if (index === -1) return;
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            const next = (index + 1) % links.length;
+            links[next].focus();
+        }
+
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            const prev = (index - 1 + links.length) % links.length;
+            links[prev].focus();
+        }
+    })
+</script>
+</body>
+</html>

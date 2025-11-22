@@ -1,4 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
+// import {fetchPokemonsStart, getPokemons, getSelectedPokemon} from "./redux/reducers/pokemons.ts";
 import {fetchPokemonsStart, getSelectedPokemon} from "./redux/reducers/pokemons.ts";
 import {useEffect} from "react";
 import SelectedPokemon from "./components/SelectedPokemon.tsx";
