@@ -1,6 +1,6 @@
 import {Pokemon} from "../../types/pokemon.ts";
 import {Pokemon as PokemonDetail} from "../../lib/PokemonType.ts";
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../store-config.ts";
 
 export type PokemonState = {
@@ -22,7 +22,7 @@ const pokemonSlice = createSlice({
     name: "pokemons",
     initialState,
     reducers: {
-        fetchPokemonsStart: (state) => ({
+        fetchPokemonsStart: (state, _action: PayloadAction<number>) => ({
             ...state,
             loading: true,
         }),
