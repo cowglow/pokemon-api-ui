@@ -1,4 +1,5 @@
 import {Pokemon} from "../../types/pokemon.ts";
+import {Pokemon as PokemonDetail} from "../../lib/PokemonType.ts";
 import {createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../store-config.ts";
 
@@ -6,20 +7,22 @@ export type PokemonState = {
     items: Pokemon[],
     loading: boolean,
     error: unknown,
-    selectedPokemon: Pokemon | null
+    selectedPokemon: Pokemon | null,
+    details: Record<string, PokemonDetail>
 }
 const initialState: PokemonState = {
     items: [],
     loading: false,
     error: null,
     selectedPokemon: null,
+    details: {},
 }
 
 const pokemonSlice = createSlice({
     name: "pokemons",
     initialState,
     reducers: {
-        fetchPokemonsStart: (state, _action) => ({
+        fetchPokemonsStart: (state) => ({
             ...state,
             loading: true,
         }),
@@ -36,6 +39,13 @@ const pokemonSlice = createSlice({
         setSelectedPokemon: (state, action) => ({
             ...state,
             selectedPokemon: action.payload
+        }),
+        setPokemonDetails: (state, action: { payload: PokemonDetail }) => ({
+            ...state,
+            details: {
+                ...state.details,
+                [action.payload.name]: action.payload
+            }
         })
     }
 })
@@ -62,10 +72,15 @@ export function getSelectedPokemonIndex(state: RootState) {
     return pokemonNames.indexOf(state.pokemons.selectedPokemon.name)
 }
 
+export function getPokemonDetails(state: RootState, name: string) {
+    return state.pokemons.details[name] ?? null
+}
+
 export const {
-     fetchPokemonsStart,
+    fetchPokemonsStart,
     fetchPokemonsSuccess,
     fetchPokemonsFailure,
     setSelectedPokemon,
+    setPokemonDetails,
 } = pokemonSlice.actions
 export default pokemonSlice.reducer

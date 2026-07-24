@@ -1,8 +1,12 @@
 import {FieldName, FormProvider, useForm} from "react-hook-form";
-import {Box, capitalize, Skeleton, styled, Typography} from "@mui/material";
+import {Box, Button, capitalize, Skeleton, styled, Typography} from "@mui/material";
 import {StyledForm, StyledTextInput} from "./RHF/FormComponet.Styled.ts";
 import createPokemon from "../lib/create-pokemon.ts";
 import {Pokemon} from "../lib/PokemonType.ts";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getPokemonDetails, setPokemonDetails} from "../redux/reducers/pokemons.ts";
+import {RootState} from "../redux/store-config.ts";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
@@ -23,14 +27,31 @@ type PokemonFormProps = {
 }
 export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) {
     const editableFields = ["name", "height", "weight", "base_experience"] as const
+    const [isEditing, setIsEditing] = useState(false)
+    const dispatch = useDispatch()
+    const cachedDetails = useSelector((state: RootState) => getPokemonDetails(state, pokemonName))
     const randomDelay = Math.floor(Math.random() * (1200 - 800 + 1)) + 800;
     const methods = useForm<PokemonFormSchema>({
         defaultValues: async () => {
+            if (cachedDetails) return cachedDetails
             const pokemonData = await fetch(url)
             const json = await pokemonData.json()
             await new Promise(resolve => setTimeout(resolve, randomDelay))
-            return createPokemon(json)
+            const pokemon = createPokemon(json)
+            dispatch(setPokemonDetails(pokemon))
+            return pokemon
         }
+    })
+
+    const handleCancel = () => {
+        methods.reset()
+        setIsEditing(false)
+    }
+
+    const handleSave = methods.handleSubmit((data) => {
+        const base = cachedDetails ?? (methods.getValues() as Pokemon)
+        dispatch(setPokemonDetails({...base, ...data}))
+        setIsEditing(false)
     })
 
     return (
@@ -59,12 +80,24 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                         : <StyledTextInput
                             key={key}
                             label={capitalize(key)}
+                            disabled={!isEditing}
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore
                             {...methods.register(fieldName)}
-
                         />
                 })}
+                {!methods.formState.isLoading && (
+                    <Box display="flex" gap={1} justifyContent="flex-end">
+                        {isEditing ? (
+                            <>
+                                <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
+                                <Button variant="contained" onClick={handleSave}>Save</Button>
+                            </>
+                        ) : (
+                            <Button variant="outlined" onClick={() => setIsEditing(true)}>Edit</Button>
+                        )}
+                    </Box>
+                )}
             </StyledPokemonForm>
         </FormProvider>
     );
