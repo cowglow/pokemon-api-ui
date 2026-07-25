@@ -56,28 +56,48 @@ still stands, only the editing angle is gone).
 - Delete the now-unused `resetPokemonDetails` action/reducer/selector
   and its saga wiring, if any.
 
-## Phase 3 - Collection slice + localStorage sync
+## Phase 3 - Collection slice + localStorage sync (done)
 
-- New `redux/reducers/collection.ts` slice: `items: Pokemon[]` (or
-  keyed by name, TBD during implementation - whichever avoids
-  duplicate adds most simply), `addToCollection(pokemon)` action.
-- A saga (or a small effect) watches `addToCollection` and writes the
-  updated collection to `localStorage`; on app start, read
-  `localStorage` once and dispatch a `hydrateCollection(items)` action
-  before anything else touches collection state.
+- `redux/reducers/collection.ts` uses Redux Toolkit's
+  `createEntityAdapter<CollectionItem>()`, where
+  `CollectionItem = {id: string, pokemon: Pokemon}` and `id` is a
+  `crypto.randomUUID()` generated via `createSlice`'s prepare-callback
+  on `addToCollection` - the entry's own identity is decoupled from the
+  pokemon's name/pokedex id (matters if duplicate catches of the same
+  species are ever wanted later; the UI still only allows one add per
+  species for now, via the FAB disabling itself). Callers still just
+  call `dispatch(addToCollection(pokemon))` - the uuid wrapping is
+  invisible to them.
+- `isInCollection(name)` is a memoized `createSelector` deriving a
+  `Set<name>` from the entities, so the check stays O(1) without
+  re-scanning on every render. This selector now drives a star icon
+  next to the pokemon name in `PokemonHeader` when the viewed pokemon
+  is already collected.
+- A saga (`syncCollectionToLocalStorageHandler`, watched via
+  `takeEvery` on `addToCollection`) writes the collection to
+  `localStorage` on every add; `App.tsx` reads `localStorage` once on
+  mount and dispatches `hydrateCollection(items)` before anything else
+  touches collection state.
 - No "remove from collection" affordance yet - not asked for; flag as
   a natural follow-up once the add path is solid.
 
-## Phase 4 - "My Collection" view
+## Phase 4 - "My Collection" view (done)
 
-- New view showing every collected pokémon as a centered, responsive
-  grid of cards styled to evoke a real pokémon card (art, name, types
-  at minimum - exact contents TBD, scaffold first and iterate on
-  layout/polish afterward, same as the list-search phase).
-- All read-only - the same `createPokemon`-shaped data already used
-  everywhere else, no new fetches.
-- Empty state: centered message inside a `Paper`, prompting the user
-  to add pokémon from the list.
+- `CollectionView.tsx`: empty state is a centered `Paper` prompting the
+  user to add pokémon from the list; populated state is a centered,
+  wrapping flex grid of `PokemonCollectionCard.tsx`.
+- Each card: name + HP (from `stats`) top row, sprite art (`avatar`) on
+  a tinted background, type chips at the bottom, bordered in the
+  pokemon's primary type's color (`lib/type-colors.ts`, the ~18
+  standard type colors). All read-only, no new fetches - the same
+  `createPokemon`-shaped data already cached everywhere else.
+- Hit a real bug building this: MUI's `styled()` is Emotion-based, not
+  styled-components, so a `$`-prefixed "transient prop" convention
+  (`$accent`) doesn't auto-filter the way it would with
+  styled-components - it leaked through as an invalid DOM attribute
+  (`Invalid attribute name: $accent`, visible in the console). Fixed
+  with an explicit `shouldForwardProp` on the `styled(...)` call
+  instead of relying on prop-name convention.
 
 ## Phase 5 - List search/filter
 
@@ -88,14 +108,18 @@ still stands, only the editing angle is gone).
 
 ## Phase 6 - AppBar navigation + settings dialog
 
-- `Header.tsx`: a menu icon button opening a classic MUI `Menu` with
-  two `MenuItem`s - "Pokémon" (the current default view) and "My
-  Collection" - controlling a simple top-level view switch in `App.tsx`
-  (no router; two views, plain state is enough, consistent with not
-  reaching for `react-router` earlier for the URL-param work either).
-- A settings (cogwheel) `IconButton` anchored on the right opens an MUI
-  `Dialog` showing: the repo name, a link to the GitHub repo, and the
-  build-time revision (see "Decided" above).
+- ~~Nav menu~~ **done** - built alongside phase 4 so the collection view
+  was actually reachable to test. `Header.tsx` has a menu icon button
+  opening a classic MUI `Menu` with two `MenuItem`s - "Pokémon" and "My
+  Collection" - controlling a top-level `view` state lifted to
+  `App.tsx` (`AppView`, exported from `Header.tsx`) and threaded through
+  `Layout.tsx`. No router; two views, plain state is enough, consistent
+  with not reaching for `react-router` earlier for the URL-param work
+  either.
+- Settings (cogwheel) dialog - not yet built. Still: an `IconButton`
+  anchored on the right opens an MUI `Dialog` showing the repo name, a
+  link to the GitHub repo, and the build-time revision (see "Decided"
+  above).
 
 ## Phase 7 - Remove the Footer
 

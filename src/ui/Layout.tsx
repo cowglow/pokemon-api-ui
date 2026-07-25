@@ -1,13 +1,18 @@
 import {PropsWithChildren} from "react";
-import Header from "./Header.tsx";
+import Header, {AppView} from "./Header.tsx";
 import Footer from "./Footer.tsx";
 import {LayoutWrapper} from "../App.Styled.ts";
 
-export default function Layout({children}: PropsWithChildren) {
+type LayoutProps = PropsWithChildren<{
+    view: AppView
+    onViewChange: (view: AppView) => void
+}>
+
+export default function Layout({children, view, onViewChange}: LayoutProps) {
     return (
         <LayoutWrapper>
             <header>
-                <Header/>
+                <Header view={view} onViewChange={onViewChange}/>
             </header>
             <main>
                 {children}
