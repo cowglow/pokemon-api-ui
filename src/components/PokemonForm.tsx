@@ -30,10 +30,10 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
     const [isEditing, setIsEditing] = useState(false)
     const dispatch = useDispatch()
     const cachedDetails = useSelector((state: RootState) => getPokemonDetails(state, pokemonName))
-    const randomDelay = Math.floor(Math.random() * (1200 - 800 + 1)) + 800;
     const methods = useForm<PokemonFormSchema>({
         defaultValues: async () => {
             if (cachedDetails) return cachedDetails
+            const randomDelay = Math.floor(Math.random() * (1200 - 800 + 1)) + 800;
             const pokemonData = await fetch(url)
             const json = await pokemonData.json()
             await new Promise(resolve => setTimeout(resolve, randomDelay))
@@ -57,7 +57,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
     return (
         <FormProvider {...methods}>
             <StyledPokemonForm>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                     <Typography variant="h4" component="h1">
                         {capitalize(pokemonName)}
                     </Typography>
@@ -87,7 +87,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                         />
                 })}
                 {!methods.formState.isLoading && (
-                    <Box display="flex" gap={1} justifyContent="flex-end">
+                    <Box sx={{display: "flex", gap: 1, justifyContent: "flex-end"}}>
                         {isEditing ? (
                             <>
                                 <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
