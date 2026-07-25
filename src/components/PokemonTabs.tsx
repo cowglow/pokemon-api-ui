@@ -1,24 +1,19 @@
 import {Box, Tab, Tabs, useMediaQuery, useTheme} from "@mui/material";
 import {SyntheticEvent} from "react";
-import {
-    getPokemonNames,
-    getPokemons,
-    getSelectedPokemonIndex,
-    isLoading,
-    setSelectedPokemon
-} from "../redux/reducers/pokemons.ts";
-import {useDispatch, useSelector} from "react-redux";
+import {getPokemonNames, getPokemons, isLoading} from "../redux/reducers/pokemons.ts";
+import {useSelector} from "react-redux";
 import Loader from "./Loader.tsx";
+import {useUrlSearchParam} from "../hooks/useUrlSearchParam.ts";
 
 export default function PokemonTabs() {
-    const dispatch = useDispatch()
     const loading = useSelector(isLoading)
     const labels = useSelector(getPokemonNames)
     const pokemons = useSelector(getPokemons)
-    const selectedTab = useSelector(getSelectedPokemonIndex)
+    const [selectedName, setSelectedName] = useUrlSearchParam("pokemon")
+    const selectedTab = labels.indexOf(selectedName ?? "")
 
     const onTabChange = (_: SyntheticEvent<Element, Event>, index: number) => {
-        dispatch(setSelectedPokemon(pokemons[index]))
+        setSelectedName(pokemons[index].name)
     }
 
     const theme = useTheme()

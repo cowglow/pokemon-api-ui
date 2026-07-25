@@ -1,22 +1,17 @@
-import {useDispatch, useSelector} from "react-redux";
-import {
-    getPokemonNames,
-    getPokemons,
-    getSelectedPokemonIndex,
-    isLoading,
-    setSelectedPokemon
-} from "../redux/reducers/pokemons.ts";
+import {useSelector} from "react-redux";
+import {getPokemonNames, getPokemons, isLoading} from "../redux/reducers/pokemons.ts";
 import {Box, capitalize, List, ListItemButton, ListItemText} from "@mui/material";
 import Loader from "./Loader.tsx";
 import React, {useCallback, useRef} from "react";
 import PokemonListIcon from "./PokemonListIcon.tsx";
+import {useUrlSearchParam} from "../hooks/useUrlSearchParam.ts";
 
 export default function PokemonList() {
-    const dispatch = useDispatch()
     const loading = useSelector(isLoading)
     const labels = useSelector(getPokemonNames)
     const pokemons = useSelector(getPokemons)
-    const selectedTab = useSelector(getSelectedPokemonIndex)
+    const [selectedName, setSelectedName] = useUrlSearchParam("pokemon")
+    const selectedTab = labels.indexOf(selectedName ?? "")
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -45,8 +40,8 @@ export default function PokemonList() {
                         sx={{width: "100%"}}
                         ref={assignRef(index)}
                         onKeyDown={(event) => onKeyDown(event, index)}
-                        onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
-                        onFocus={() => dispatch(setSelectedPokemon(pokemons[index]))}
+                        onClick={() => setSelectedName(pokemons[index].name)}
+                        onFocus={() => setSelectedName(pokemons[index].name)}
                         selected={selectedTab === index}
                     >
                         <PokemonListIcon label={label} pokemonIndex={index + 1}/>
