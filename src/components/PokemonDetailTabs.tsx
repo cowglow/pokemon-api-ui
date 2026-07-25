@@ -1,5 +1,5 @@
 import {ReactNode, SyntheticEvent, useState} from "react";
-import {Box, Tab, Tabs} from "@mui/material";
+import {Box, Divider, Tab, Tabs} from "@mui/material";
 
 type TabDef = {
     label: string
@@ -29,15 +29,16 @@ export default function PokemonDetailTabs({tabs}: PokemonDetailTabsProps) {
                     />
                 ))}
             </Tabs>
-            {tabs.map((tab, index) => (
+            <Divider/>
+            {tabs.map((tab, index) => activeTab === index && (
                 <Box
                     key={tab.label}
                     role="tabpanel"
-                    hidden={activeTab !== index}
                     id={`pokemon-tabpanel-${index}`}
                     aria-labelledby={`pokemon-tab-${index}`}
+                    sx={{display: "flex", flexDirection: "column", gap: 4, my: 2}}
                 >
-                    {activeTab === index && tab.content}
+                    {tab.content}
                 </Box>
             ))}
         </Box>

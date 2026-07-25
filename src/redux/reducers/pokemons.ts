@@ -45,13 +45,6 @@ const pokemonSlice = createSlice({
             ...state,
             selectedPokemon: action.payload
         }),
-        setPokemonDetails: (state, action: { payload: PokemonDetail }) => ({
-            ...state,
-            details: {
-                ...state.details,
-                [action.payload.name]: action.payload
-            }
-        }),
         fetchPokemonDetailStart: (state, action: PayloadAction<{ name: string, url: string }>) => ({
             ...state,
             detailsLoading: {...state.detailsLoading, [action.payload.name]: true},
@@ -130,7 +123,6 @@ export const {
     fetchPokemonsSuccess,
     fetchPokemonsFailure,
     setSelectedPokemon,
-    setPokemonDetails,
     fetchPokemonDetailStart,
     fetchPokemonDetailSuccess,
     fetchPokemonDetailFailure,
