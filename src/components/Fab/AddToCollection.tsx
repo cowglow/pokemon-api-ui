@@ -2,7 +2,6 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Fab} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import {Pokemon} from "../../lib/PokemonType.ts";
 import {
     addToCollection,
@@ -40,14 +39,14 @@ export default function AddToCollection({pokemon}: AddToCollectionProps) {
     return (
         <>
             <Fab
-                color="primary"
+                color={inCollection ? "secondary" : "inherit"}
                 aria-label={inCollection ? "remove from collection" : "add to collection"}
                 size="medium"
                 onClick={onClick}
                 disabled={!pokemon}
                 sx={{position: "absolute", bottom: 33, right: 33}}
             >
-                {inCollection ? <StarRoundedIcon/> : <StarBorderRoundedIcon/>}
+                <StarRoundedIcon color={inCollection ? "inherit" : "disabled"}/>
             </Fab>
             <RemoveFromCollectionDialog
                 open={confirmOpen}

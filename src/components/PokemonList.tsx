@@ -109,7 +109,8 @@ export default function PokemonList() {
                             onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
                             selected={selectedTab === index}
                         >
-                            <PokemonListIcon label={label} pokemonIndex={index + 1}/>
+                            <PokemonListIcon label={label} pokemonIndex={index + 1}
+                                             collected={collectedNames.has(label)}/>
                             <ListItemText primary={capitalize(label)}/>
                         </ListItemButton>
                     ))}
