@@ -6,9 +6,10 @@ import {
     isLoading,
     setSelectedPokemon
 } from "../redux/reducers/pokemons.ts";
-import {Box, capitalize, Divider, List, ListItem, ListItemButton, ListItemIcon} from "@mui/material";
+import {Box, capitalize, Divider, List, ListItem, ListItemButton} from "@mui/material";
 import Loader from "./Loader.tsx";
 import React, {useCallback, useRef} from "react";
+import PokemonListIcon from "./PokemonListIcon.tsx";
 
 export default function PokemonList() {
     const dispatch = useDispatch()
@@ -40,11 +41,7 @@ export default function PokemonList() {
                 {labels.map((label, index) => (
                     <Box key={`pokemon-${index}`}>
                         <ListItem disablePadding>
-                            <ListItemIcon>
-                                <img
-                                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png`}
-                                    alt={label}/>
-                            </ListItemIcon>
+                            <PokemonListIcon label={label} pokemonIndex={index + 1}/>
                             <ListItemButton
                                 component="button"
                                 sx={{fontSize: 20}}
