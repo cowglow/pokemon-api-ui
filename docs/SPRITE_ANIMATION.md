@@ -49,6 +49,21 @@ the hook (`image-rendering: pixelated`, for crisp sprite edges instead
 of blurry upscaling), and is what actually replaced the old static
 `<Image src={avatar}>` in `PokemonForm`.
 
+## Frame sizes are wildly inconsistent
+
+Combining base sprites with every generation's version sprites means
+the frame list mixes genuinely different intrinsic image sizes -
+modern sprites are 96x96, but plenty of older-generation ones are much
+smaller (32x32, 40x40, etc). Left unconstrained, the `<img>` would
+resize to each frame's native dimensions and visibly jump around on
+every swap. `AnimatedSprite` takes a `size` prop (96 by default,
+matching the loading `Skeleton`'s dimensions in `PokemonForm` so there's
+no jump on the loading->loaded transition either) and fixes the
+rendered `<img>`'s `width`/`height` to it with `object-fit: contain` -
+the box never changes size, only the image scaled to fit within it
+does, and `image-rendering: pixelated` keeps the smaller sprites crisp
+rather than blurry when scaled up.
+
 ## A lint fix along the way
 
 The hook originally reset `frameIndex`/`ready` with synchronous
