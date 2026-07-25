@@ -16,7 +16,7 @@ import {
     ListItemText,
     Paper,
     TextField,
-    ToggleButton
+    ToggleButton, useTheme
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -26,6 +26,7 @@ import PokemonListIcon from "./PokemonListIcon.tsx";
 import {useCollectedNames} from "../redux/reducers/collection.ts";
 
 export default function PokemonList() {
+    const theme = useTheme()
     const dispatch = useDispatch()
     const loading = useSelector(isLoading)
     const labels = useSelector(getPokemonNames)
@@ -103,7 +104,10 @@ export default function PokemonList() {
                         <ListItemButton
                             key={`pokemon-${index}`}
                             component="button"
-                            sx={{width: "100%"}}
+                            sx={{
+                                width: "100%",
+                                backgroundColor: collectedNames.has(label) ? theme.palette.secondary.main : "inherit",
+                            }}
                             ref={assignRef(localIndex)}
                             onKeyDown={(event) => onKeyDown(event, localIndex)}
                             onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}

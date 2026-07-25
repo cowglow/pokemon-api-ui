@@ -39,7 +39,7 @@ export default function AddToCollection({pokemon}: AddToCollectionProps) {
     return (
         <>
             <Fab
-                color={inCollection ? "secondary" : "inherit"}
+                color={inCollection ? "primary" : "inherit"}
                 aria-label={inCollection ? "remove from collection" : "add to collection"}
                 size="medium"
                 onClick={onClick}

@@ -13,11 +13,12 @@ export default function PokemonListIcon({pokemonIndex, label, collected}: Pokemo
         <ListItemIcon>
             <Badge
                 overlap="circular"
-                anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+                anchorOrigin={{vertical: "top", horizontal: "left"}}
                 badgeContent={<StarRoundedIcon sx={{fontSize: 14}} color="warning"/>}
                 invisible={!collected}
             >
-                <Box component="img" src={pokemonIconUrl} alt={label} sx={{width: 40, height: 40, objectFit: "contain"}}/>
+                <Box component="img" src={pokemonIconUrl} alt={label}
+                     sx={{width: 40, height: 40, objectFit: "contain"}}/>
             </Badge>
         </ListItemIcon>
     )
