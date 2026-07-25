@@ -1,4 +1,5 @@
 import {Pokemon, PokemonResponse} from "./PokemonType.ts";
+import {getSpriteFrames} from "./sprite-frames.ts";
 
 export default function createPokemon(data: PokemonResponse): Pokemon {
     return {
@@ -8,6 +9,7 @@ export default function createPokemon(data: PokemonResponse): Pokemon {
         avatar: data.sprites.front_default,
         experience: data.base_experience,
         height: data.height,
-        weight: data.weight
+        weight: data.weight,
+        spriteFrames: getSpriteFrames(data.sprites)
     }
 }

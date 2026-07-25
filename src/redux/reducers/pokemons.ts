@@ -69,6 +69,12 @@ const pokemonSlice = createSlice({
             ...state,
             detailsLoading: {...state.detailsLoading, [action.payload.name]: false},
             detailsError: {...state.detailsError, [action.payload.name]: action.payload.error}
+        }),
+        resetPokemonDetails: (state) => ({
+            ...state,
+            details: {},
+            detailsLoading: {},
+            detailsError: {}
         })
     }
 })
@@ -128,5 +134,6 @@ export const {
     fetchPokemonDetailStart,
     fetchPokemonDetailSuccess,
     fetchPokemonDetailFailure,
+    resetPokemonDetails,
 } = pokemonSlice.actions
 export default pokemonSlice.reducer

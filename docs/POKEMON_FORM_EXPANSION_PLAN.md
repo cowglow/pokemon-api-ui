@@ -87,9 +87,10 @@ it's a fixed 6-key numeric shape.
 panels):
 - Abilities & Types - simple chip/list display, no extra fetch.
 - Cries - audio players for `latest`/`legacy`.
-- Sprites - gallery of the sprite variants; also consider swapping the
-  main avatar to `sprites.other['official-artwork'].front_default` for
-  a nicer default image.
+- ~~Sprites - gallery of the sprite variants~~ **done, but as a cosmetic
+  animation instead of a gallery tab** - see `docs/SPRITE_ANIMATION.md`
+  (its own doc, since it's a self-contained cosmetic effect rather than
+  part of this data/form-expansion track).
 
 **Deferred / later**:
 - Moves tab - needs version-group filtering first, otherwise it's an
