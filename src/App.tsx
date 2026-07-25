@@ -38,7 +38,6 @@ export default function App() {
                 {view === "pokemons" ? (
                     <>
                         <PokemonList/>
-                        {/*<PokemonTabs/>*/}
                         <SelectedPokemon pokemon={selectedPokemon}/>
                         <AddToCollection onClick={onAddToCollection} disabled={!selectedDetails || alreadyInCollection}/>
                     </>

@@ -6,7 +6,17 @@ import {
     isLoading,
     setSelectedPokemon
 } from "../redux/reducers/pokemons.ts";
-import {Box, capitalize, InputAdornment, List, ListItemButton, ListItemText, TextField} from "@mui/material";
+import {
+    Box,
+    capitalize,
+    Divider,
+    InputAdornment,
+    List,
+    ListItemButton,
+    ListItemText,
+    Paper,
+    TextField
+} from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import Loader from "./Loader.tsx";
 import React, {useCallback, useMemo, useRef, useState} from "react";
@@ -42,10 +52,12 @@ export default function PokemonList() {
     }, [filteredItems]);
 
     const assignRef = (localIndex: number) =>
-        (el: HTMLButtonElement | null) => { itemRefs.current[localIndex] = el }
+        (el: HTMLButtonElement | null) => {
+            itemRefs.current[localIndex] = el
+        }
 
     return (
-        <Box sx={{width: 360, contain: "content", overflow: "auto"}}>
+        <Paper sx={{display: "flex", flexDirection: "column", width: 360, contain: "content"}}>
             <TextField
                 size="small"
                 placeholder="Search pokémon"
@@ -63,24 +75,27 @@ export default function PokemonList() {
                     }
                 }}
             />
-            <List component="nav" disablePadding dense tabIndex={-1}>
-                {filteredItems.map(({label, index}, localIndex) => (
-                    <ListItemButton
-                        key={`pokemon-${index}`}
-                        component="button"
-                        sx={{width: "100%"}}
-                        ref={assignRef(localIndex)}
-                        onKeyDown={(event) => onKeyDown(event, localIndex)}
-                        onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
-                        onFocus={() => dispatch(setSelectedPokemon(pokemons[index]))}
-                        selected={selectedTab === index}
-                    >
-                        <PokemonListIcon label={label} pokemonIndex={index + 1}/>
-                        <ListItemText primary={capitalize(label)}/>
-                    </ListItemButton>
-                ))}
-                {loading && <Loader loading={loading} isMobile={false}/>}
-            </List>
-        </Box>
+            <Divider/>
+            <Box sx={{overflow: "auto"}}>
+                <List component="nav" disablePadding dense tabIndex={-1}>
+                    {filteredItems.map(({label, index}, localIndex) => (
+                        <ListItemButton
+                            key={`pokemon-${index}`}
+                            component="button"
+                            sx={{width: "100%"}}
+                            ref={assignRef(localIndex)}
+                            onKeyDown={(event) => onKeyDown(event, localIndex)}
+                            onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
+                            onFocus={() => dispatch(setSelectedPokemon(pokemons[index]))}
+                            selected={selectedTab === index}
+                        >
+                            <PokemonListIcon label={label} pokemonIndex={index + 1}/>
+                            <ListItemText primary={capitalize(label)}/>
+                        </ListItemButton>
+                    ))}
+                    {loading && <Loader loading={loading} isMobile={false}/>}
+                </List>
+            </Box>
+        </Paper>
     )
 }

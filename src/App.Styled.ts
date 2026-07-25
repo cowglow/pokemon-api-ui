@@ -1,4 +1,4 @@
-import {Box, Paper, styled} from "@mui/material";
+import {Box, styled} from "@mui/material";
 
 
 export const LayoutWrapper = styled(Box)`
@@ -15,10 +15,11 @@ export const LayoutWrapper = styled(Box)`
         overflow: auto;
     }
 `
-export const ContentWrapper = styled(Paper)`
+export const ContentWrapper = styled(Box)`
     display: flex;
     height: calc(100% - ${({theme}) => theme.spacing(2)});
     margin: ${({theme}) => theme.spacing(1)};
     padding: ${({theme}) => theme.spacing(0.5)};
     overflow: hidden;
+    gap: ${({theme}) => theme.spacing(1)};
 `
