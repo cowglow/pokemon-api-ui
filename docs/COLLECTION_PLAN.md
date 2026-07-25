@@ -99,12 +99,24 @@ still stands, only the editing angle is gone).
   with an explicit `shouldForwardProp` on the `styled(...)` call
   instead of relying on prop-name convention.
 
-## Phase 5 - List search/filter
+## Phase 5 - List search/filter (done)
 
 - A `TextField` at the top of `PokemonList`'s scrolling `Box`, magnifying-glass
-  icon as an `InputAdornment` inside the field (not a separate button).
+  icon (`SearchRoundedIcon`) as a `slotProps.input.startAdornment`
+  inside the field (not a separate button) - MUI 9 deprecated the older
+  `InputProps` prop in favor of `slotProps`.
 - Plain client-side substring filter over the list's names - scaffold
   only, layout polish deferred to the user per their own note.
+- The one real wrinkle: keyboard arrow-navigation and the
+  currently-selected highlight both used to index directly into the
+  full `labels`/`pokemons` arrays. Filtering meant those had to become
+  two different index spaces - `filteredItems` now carries both the
+  filtered-list's local index (for arrow-key wraparound math and ref
+  assignment, so ArrowDown/Up only ever move between *visible* rows)
+  and each item's original index into the full list (for dispatching
+  `setSelectedPokemon(pokemons[index])` and the `selected={selectedTab
+  === index}` highlight check, since `getSelectedPokemonIndex` is
+  computed against the unfiltered list).
 
 ## Phase 6 - AppBar navigation + settings dialog
 

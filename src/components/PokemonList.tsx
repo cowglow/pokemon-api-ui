@@ -6,9 +6,10 @@ import {
     isLoading,
     setSelectedPokemon
 } from "../redux/reducers/pokemons.ts";
-import {Box, capitalize, List, ListItemButton, ListItemText} from "@mui/material";
+import {Box, capitalize, InputAdornment, List, ListItemButton, ListItemText, TextField} from "@mui/material";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import Loader from "./Loader.tsx";
-import React, {useCallback, useRef} from "react";
+import React, {useCallback, useMemo, useRef, useState} from "react";
 import PokemonListIcon from "./PokemonListIcon.tsx";
 
 export default function PokemonList() {
@@ -18,33 +19,58 @@ export default function PokemonList() {
     const pokemons = useSelector(getPokemons)
     const selectedTab = useSelector(getSelectedPokemonIndex)
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const [search, setSearch] = useState("")
 
-    const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const filteredItems = useMemo(() => {
+        const query = search.trim().toLowerCase()
+        return labels
+            .map((label, index) => ({label, index}))
+            .filter(({label}) => !query || label.includes(query))
+    }, [labels, search])
+
+    const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLButtonElement>, localIndex: number) => {
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            const next = (index + 1) % labels.length;
+            const next = (localIndex + 1) % filteredItems.length;
             itemRefs.current[next]?.focus();
         }
         if (e.key === "ArrowUp") {
             e.preventDefault();
-            const prev = (index - 1 + labels.length) % labels.length;
+            const prev = (localIndex - 1 + filteredItems.length) % filteredItems.length;
             itemRefs.current[prev]?.focus();
         }
-    }, [labels]);
+    }, [filteredItems]);
 
-    const assignRef = (index: number) =>
-        (el: HTMLButtonElement | null) => { itemRefs.current[index] = el }
+    const assignRef = (localIndex: number) =>
+        (el: HTMLButtonElement | null) => { itemRefs.current[localIndex] = el }
 
     return (
         <Box sx={{width: 360, contain: "content", overflow: "auto"}}>
+            <TextField
+                size="small"
+                placeholder="Search pokémon"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                fullWidth
+                sx={{p: 1}}
+                slotProps={{
+                    input: {
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchRoundedIcon fontSize="small"/>
+                            </InputAdornment>
+                        )
+                    }
+                }}
+            />
             <List component="nav" disablePadding dense tabIndex={-1}>
-                {labels.map((label, index) => (
+                {filteredItems.map(({label, index}, localIndex) => (
                     <ListItemButton
                         key={`pokemon-${index}`}
                         component="button"
                         sx={{width: "100%"}}
-                        ref={assignRef(index)}
-                        onKeyDown={(event) => onKeyDown(event, index)}
+                        ref={assignRef(localIndex)}
+                        onKeyDown={(event) => onKeyDown(event, localIndex)}
                         onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
                         onFocus={() => dispatch(setSelectedPokemon(pokemons[index]))}
                         selected={selectedTab === index}
