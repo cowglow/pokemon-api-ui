@@ -9,6 +9,7 @@ import AddToCollection from "./components/Fab/AddToCollection.tsx";
 import Layout from "./ui/Layout.tsx";
 import {ContentWrapper} from "./App.Styled.ts";
 import PokemonList from "./components/PokemonList.tsx";
+import {REQUEST_LIMIT_DEFAULT} from "./lib/constants.ts";
 
 export default function App() {
     const dispatch = useDispatch()
@@ -17,7 +18,7 @@ export default function App() {
     const alreadyInCollection = useIsInCollection(selectedPokemon?.name ?? "")
 
     useEffect(() => {
-        dispatch(fetchPokemonsStart(200))
+        dispatch(fetchPokemonsStart(REQUEST_LIMIT_DEFAULT))
     }, [dispatch])
 
     useEffect(() => {
