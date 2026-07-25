@@ -4,6 +4,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import {useState} from "react";
 import Branding from "../components/Branding.tsx";
 import SettingsDialog from "../components/SettingsDialog.tsx";
+import {useUserName} from "../redux/reducers/user.ts";
 
 export type AppView = "pokemons" | "collection"
 
@@ -15,6 +16,7 @@ type HeaderProps = {
 export default function Header({view, onViewChange}: HeaderProps) {
     const [menuOpen, setMenuOpen] = useState(false)
     const [settingsOpen, setSettingsOpen] = useState(false)
+    const userName = useUserName()
 
     const closeMenu = () => setMenuOpen(false)
 
@@ -37,7 +39,7 @@ export default function Header({view, onViewChange}: HeaderProps) {
                                 <ListItemText primary="Pokémon"/>
                             </ListItemButton>
                             <ListItemButton selected={view === "collection"} onClick={() => selectView("collection")}>
-                                <ListItemText primary="My Collection"/>
+                                <ListItemText primary={userName ? `${userName}'s Collection` : "My Collection"}/>
                             </ListItemButton>
                         </List>
                     </Box>

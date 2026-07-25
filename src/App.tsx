@@ -3,10 +3,13 @@ import {useMediaQuery, useTheme} from "@mui/material";
 import {fetchPokemonsStart, getSelectedPokemon, setSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
 import {hydrateCollection} from "./redux/reducers/collection.ts";
 import {getStoredCollection} from "./lib/collection-storage.ts";
+import {hydrateUserName} from "./redux/reducers/user.ts";
+import {getStoredUserName} from "./lib/user-storage.ts";
 import {useEffect, useState} from "react";
 import SelectedPokemon from "./components/SelectedPokemon.tsx";
 import AddToCollection from "./components/Fab/AddToCollection.tsx";
 import CollectionView from "./components/CollectionView.tsx";
+import NamePromptDialog from "./components/NamePromptDialog.tsx";
 // import PokemonTabs from "./components/PokemonTabs.tsx";
 import Layout from "./ui/Layout.tsx";
 import {AppView} from "./ui/Header.tsx";
@@ -30,11 +33,16 @@ export default function App() {
         dispatch(hydrateCollection(getStoredCollection()))
     }, [dispatch])
 
+    useEffect(() => {
+        dispatch(hydrateUserName(getStoredUserName()))
+    }, [dispatch])
+
     const showDetail = !isMobile || Boolean(selectedPokemon)
     const showList = !isMobile || !selectedPokemon
 
     return (
         <Layout view={view} onViewChange={setView}>
+            <NamePromptDialog/>
             <ContentWrapper>
                 {view === "pokemons" ? (
                     <>
