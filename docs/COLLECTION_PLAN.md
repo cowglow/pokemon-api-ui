@@ -176,13 +176,37 @@ approach's own commented-out `//height: 100%;` suggests someone tried
 this before and reverted without checking why, so this was double
 checked, not assumed.
 
+## Phase 8 - Follow-ups added after the plan was "done" (done)
+
+Two small additions once every phase above had shipped:
+
+- **Removing a pokémon from the collection.** The star next to the
+  name in `PokemonHeader` (shown when the viewed pokemon is collected)
+  is now a clickable `IconButton` opening `RemoveFromCollectionDialog.tsx`
+  (Keep/Delete). Confirming dispatches `removeFromCollection(id)` -
+  `collectionAdapter.removeOne` directly, no prepare callback needed
+  since the caller already has the entity id (a new memoized
+  `getCollectionItemId(name)` selector/`useCollectionItemId` hook,
+  mirroring `isInCollection`'s name-to-id `Map` derivation).
+  `removeFromCollection` was added alongside `addToCollection` to the
+  localStorage-sync saga's watched actions
+  (`takeEvery([addToCollection, removeFromCollection], ...)`) -
+  otherwise a removal wouldn't persist and a stale entry would
+  resurrect on the next `hydrateCollection` read.
+- **A collection-only filter toggle in the list.** A single star
+  `ToggleButton` next to the search field in `PokemonList`, composing
+  with the existing text search. Checking collection membership across
+  the whole 200-item list can't reuse the per-name `useIsInCollection`
+  hook (calling a hook in a loop over a dynamic list breaks the Rules
+  of Hooks) - added `getCollectedNames`/`useCollectedNames`, a memoized
+  selector deriving a `Set<name>` from the existing name-to-id `Map`
+  selector, so the whole list checks membership via a plain
+  `Set.has()` inside the existing `filteredItems` computation instead.
+
 ## Later / not in scope now
 
 - Regenerating `CLAUDE.md` - it's increasingly stale (still describes
   the pre-saga `fetch`-in-`defaultValues` pattern, no mention of tabs,
-  sprite animation, URL-based selection, or any of this). Worth a pass
-  with the `init` skill once this round of changes lands, not bundled
-  into it.
-- Removing a pokémon from the collection.
+  sprite animation, URL-based selection, or any of this).
 - Any of the still-deferred items from `POKEMON_FORM_EXPANSION_PLAN.md`
   (`game_indices`, species flavor text).
