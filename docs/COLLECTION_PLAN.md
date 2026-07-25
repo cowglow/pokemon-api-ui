@@ -128,10 +128,20 @@ still stands, only the editing angle is gone).
   `Layout.tsx`. No router; two views, plain state is enough, consistent
   with not reaching for `react-router` earlier for the URL-param work
   either.
-- Settings (cogwheel) dialog - not yet built. Still: an `IconButton`
-  anchored on the right opens an MUI `Dialog` showing the repo name, a
-  link to the GitHub repo, and the build-time revision (see "Decided"
-  above).
+- ~~Settings (cogwheel) dialog~~ **done** - `SettingsDialog.tsx`, opened
+  by an `IconButton` pushed to the right of the `Toolbar` via a
+  `flexGrow: 1` spacer `Box`. Shows the repo name, a link to the GitHub
+  repo, and the build-time revision. The revision itself:
+  `vite.config.ts` runs `execSync('git rev-parse --short HEAD')` at
+  build time (wrapped in try/catch, falling back to `"unknown"`) and
+  exposes it via `define: {__GIT_REVISION__: JSON.stringify(...)}` -
+  works identically for `npm run dev` and CI builds, no env vars
+  needed. Required installing `@types/node` (not previously a
+  dependency) so `node:child_process`'s types resolve in
+  `vite.config.ts`; matched to the major Node version already in use
+  (24). Confirmed the exact commit SHA actually lands in the built
+  bundle, not just passing typecheck, by grepping `dist/assets/*.js`
+  for the real `git rev-parse` output after building.
 
 ## Phase 7 - Remove the Footer
 
