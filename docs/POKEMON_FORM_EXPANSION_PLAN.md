@@ -87,9 +87,39 @@ it's a fixed 6-key numeric shape.
 panels):
 - Abilities & Types - simple chip/list display, no extra fetch.
 - Cries - audio players for `latest`/`legacy`.
-- Sprites - gallery of the sprite variants; also consider swapping the
-  main avatar to `sprites.other['official-artwork'].front_default` for
-  a nicer default image.
+- ~~Sprites - gallery of the sprite variants~~ **done, but as an
+  animation instead of a gallery** - see 3a below.
+
+### 3a. Sprite animation (done)
+
+Instead of a static gallery, the main avatar image in `PokemonForm` was
+replaced with a slow, retro-feeling flipbook animation:
+
+- `lib/sprite-frames.ts`'s `getSpriteFrames(sprites)` combines the base
+  front/back/shiny(/female) sprites with every per-generation sprite
+  variant from `sprites.versions` into one deduplicated frame list
+  (recursively walking the nested version/game structure, skipping the
+  `animated` key - Gen-V/showdown sprites are already-animated GIFs,
+  a different feature from a manually-stepped flipbook). `createPokemon`
+  exposes this as `Pokemon.spriteFrames: string[]`.
+- `components/useSpriteAnimation.ts` preloads every frame (so swaps
+  don't flicker/pop-in broken images), then steps through them on a
+  plain `setInterval` at a configurable low fps (3 by default - real
+  animation smoothness isn't the goal, the low frame rate *is* the
+  retro effect). Chose `setInterval` over `requestAnimationFrame`
+  deliberately: at 2-4fps the drift `rAF` avoids is imperceptible, and
+  `setInterval` is simpler.
+- `components/AnimatedSprite.tsx` is the presentational wrapper
+  (`image-rendering: pixelated` for crisp sprite edges), swapped in for
+  the old static `<Image src={avatar}>` in `PokemonForm`.
+- Since `SelectedPokemon` already remounts `PokemonForm` per selection
+  (`key={form-${name}}`), each animation starts fresh naturally; the
+  hook still guards against frames changing under a live instance
+  (comparing against a stored previous `frames` reference and resetting
+  during render, not inside an effect body - `eslint-plugin-react-hooks`
+  7's `set-state-in-effect` rule flags synchronous `setState` at the
+  top of an effect) in case it's ever reused without a remount-per-item
+  pattern.
 
 **Deferred / later**:
 - Moves tab - needs version-group filtering first, otherwise it's an

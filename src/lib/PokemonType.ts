@@ -36,6 +36,7 @@ export type Pokemon = PokemonAbstract & {
     height: number
     name: string
     species?: PokemonSpecies[]
+    spriteFrames: string[]
     stats?: PokemonStat[]
     weight: number
 }

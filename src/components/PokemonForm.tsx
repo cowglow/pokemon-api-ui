@@ -6,17 +6,13 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {setPokemonDetails} from "../redux/reducers/pokemons.ts";
 import {usePokemonDetail} from "./usePokemonDetail.ts";
+import AnimatedSprite from "./AnimatedSprite.tsx";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
     display: flex;
     padding: 0 ${({theme}) => theme.spacing(1.73)};
 `;
-
-const Image = styled('img')`
-    padding: 0;
-    margin: 0;
-`
 
 type PokemonFormSchema = Partial<Pokemon>
 
@@ -50,7 +46,9 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                         {capitalize(pokemonName)}
                     </Typography>
                     {loading && <Skeleton width={96} height={96}/>}
-                    {cachedDetails?.avatar && <Image src={cachedDetails.avatar} alt=""/>}
+                    {cachedDetails && cachedDetails.spriteFrames.length > 0 && (
+                        <AnimatedSprite frames={cachedDetails.spriteFrames} fps={3}/>
+                    )}
                 </Box>
                 {detailError && (
                     <Typography color="error" variant="body2">
