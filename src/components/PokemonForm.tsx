@@ -2,15 +2,10 @@ import {FormProvider, Path, useForm} from "react-hook-form";
 import {Box, Button, capitalize, Skeleton, styled, Typography} from "@mui/material";
 import {StyledForm, StyledTextInput} from "./RHF/FormComponet.Styled.ts";
 import {Pokemon} from "../lib/PokemonType.ts";
-import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    fetchPokemonDetailStart,
-    getPokemonDetailError,
-    getPokemonDetails,
-    setPokemonDetails
-} from "../redux/reducers/pokemons.ts";
-import {RootState} from "../redux/store-config.ts";
+import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {setPokemonDetails} from "../redux/reducers/pokemons.ts";
+import {usePokemonDetail} from "./usePokemonDetail.ts";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
@@ -33,20 +28,8 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
     const editableFields = ["name", "height", "weight", "experience"] as const
     const [isEditing, setIsEditing] = useState(false)
     const dispatch = useDispatch()
-    const cachedDetails = useSelector((state: RootState) => getPokemonDetails(state, pokemonName))
-    const detailError = useSelector((state: RootState) => getPokemonDetailError(state, pokemonName))
-    const loading = !cachedDetails && !detailError
-    const methods = useForm<PokemonFormSchema>({defaultValues: cachedDetails ?? {}})
-
-    useEffect(() => {
-        if (!cachedDetails) dispatch(fetchPokemonDetailStart({name: pokemonName, url}))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    useEffect(() => {
-        if (cachedDetails) methods.reset(cachedDetails)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cachedDetails])
+    const methods = useForm<PokemonFormSchema>()
+    const {data: cachedDetails, loading, error: detailError} = usePokemonDetail(pokemonName, url, methods.reset)
 
     const handleCancel = () => {
         methods.reset()

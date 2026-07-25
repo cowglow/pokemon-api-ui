@@ -1,6 +1,7 @@
 import {Pokemon} from "../../types/pokemon.ts";
 import {Pokemon as PokemonDetail} from "../../lib/PokemonType.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {useSelector} from "react-redux";
 import {RootState} from "../store-config.ts";
 
 export type PokemonState = {
@@ -104,6 +105,18 @@ export function isPokemonDetailLoading(state: RootState, name: string) {
 
 export function getPokemonDetailError(state: RootState, name: string) {
     return state.pokemons.detailsError[name] ?? null
+}
+
+export function usePokemonDetails(name: string) {
+    return useSelector((state: RootState) => getPokemonDetails(state, name))
+}
+
+export function usePokemonDetailLoading(name: string) {
+    return useSelector((state: RootState) => isPokemonDetailLoading(state, name))
+}
+
+export function usePokemonDetailError(name: string) {
+    return useSelector((state: RootState) => getPokemonDetailError(state, name))
 }
 
 export const {

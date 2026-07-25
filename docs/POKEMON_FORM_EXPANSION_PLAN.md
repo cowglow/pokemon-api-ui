@@ -4,28 +4,57 @@ Captures the discussion on (1) moving detail-fetching to a redux-saga
 and (2) extending `createPokemon`/the form with more of the PokeAPI
 response. Part 1 is being implemented now; the rest is future work.
 
-## 1. Detail fetching: saga instead of inline `fetch` (in progress)
+## 1. Detail fetching: saga instead of inline `fetch` (done)
 
-`PokemonForm` currently fetches via a raw `fetch(url)` inside React
-Hook Form's async `defaultValues` callback, bypassing the redux-saga
-pattern already used for the list phase
-(`fetchPokemonsStart` -> `fetchPokemonsHandler` -> `requestPokemons`).
+`PokemonForm` used to fetch via a raw `fetch(url)` inside React Hook
+Form's async `defaultValues` callback, bypassing the redux-saga pattern
+already used for the list phase (`fetchPokemonsStart` ->
+`fetchPokemonsHandler` -> `requestPokemons`).
 
-Decided approach:
+Implemented approach:
 
-- Mirror the existing pattern: `fetchPokemonDetailStart/Success/Failure`
+- Mirrored the existing pattern: `fetchPokemonDetailStart/Success/Failure`
   actions, a `requestPokemonDetail` saga-request, a
   `fetchPokemonDetailHandler` saga-handler, watched via `takeEvery`
   (safe here since results are cached by pokemon name - a late-resolving
   stale request can't clobber a newer selection's data).
-- Drop RHF's async `defaultValues` entirely. `defaultValues` can't
+- Dropped RHF's async `defaultValues` entirely. `defaultValues` can't
   `await` a saga result (that only resolves through the store, not a
   promise `defaultValues` can hold onto) without an awkward manual
-  `store.subscribe` in the component. Instead: dispatch the fetch in a
-  `useEffect`, drive the loading skeleton off a `detailsLoading`
-  selector, and call `methods.reset(detail)` once the data lands in
-  Redux. This keeps the detail phase consistent with how the list
-  phase already reads loading/data through selectors.
+  `store.subscribe` in the component. Instead: dispatch the fetch on
+  mount, drive the loading skeleton off a `detailsLoading` selector,
+  and call `methods.reset(detail)` once the data lands in Redux. This
+  keeps the detail phase consistent with how the list phase already
+  reads loading/data through selectors.
+
+### 1a. Follow-up cleanup
+
+A first pass wired the above directly into `PokemonForm` (inline
+`useSelector((state: RootState) => ...)` calls and two bare
+`useEffect`s in the component body), then a review pass tightened it:
+
+- **Selector hooks instead of inline `RootState` lambdas.**
+  `usePokemonDetails(name)`, `usePokemonDetailLoading(name)`,
+  `usePokemonDetailError(name)` live next to the plain selectors in
+  `redux/reducers/pokemons.ts`, each just wrapping `useSelector` +
+  the existing selector. `PokemonForm` no longer imports `RootState`
+  or `useSelector` at all.
+- **One hook to own the fetch-orchestration effects.**
+  `usePokemonDetail(name, url, reset)`, colocated next to
+  `PokemonForm.tsx`, takes RHF's `methods.reset` as a parameter, owns
+  both effects (dispatch-on-mount, reset-on-arrival) internally, and
+  returns `{data, loading, error}`. `PokemonForm` itself has no
+  `useEffect`/`useDispatch` left in it - it just calls the hook and
+  renders.
+- **Delay separated from the request function.** The artificial
+  800-1200ms delay used to be `await`ed inside `requestPokemonDetail`,
+  mixing timing/demo concerns into what should be a plain "fetch and
+  parse" function. Moved to an explicit `yield delay(ms)` (redux-saga's
+  own effect creator) in `fetchPokemonDetailHandler`, with the random
+  range extracted to a small `randomInt(min, max)` helper. This makes
+  `requestPokemonDetail` pure I/O, and the delay a one-line, visible,
+  trivially-removable step in the saga instead of buried in network
+  code.
 
 ## 2. Response shape survey
 
