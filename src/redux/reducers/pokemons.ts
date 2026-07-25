@@ -9,6 +9,8 @@ export type PokemonState = {
     error: unknown,
     selectedPokemon: Pokemon | null,
     details: Record<string, PokemonDetail>
+    detailsLoading: Record<string, boolean>
+    detailsError: Record<string, unknown>
 }
 const initialState: PokemonState = {
     items: [],
@@ -16,6 +18,8 @@ const initialState: PokemonState = {
     error: null,
     selectedPokemon: null,
     details: {},
+    detailsLoading: {},
+    detailsError: {},
 }
 
 const pokemonSlice = createSlice({
@@ -46,6 +50,24 @@ const pokemonSlice = createSlice({
                 ...state.details,
                 [action.payload.name]: action.payload
             }
+        }),
+        fetchPokemonDetailStart: (state, action: PayloadAction<{ name: string, url: string }>) => ({
+            ...state,
+            detailsLoading: {...state.detailsLoading, [action.payload.name]: true},
+            detailsError: {...state.detailsError, [action.payload.name]: null}
+        }),
+        fetchPokemonDetailSuccess: (state, action: PayloadAction<PokemonDetail>) => ({
+            ...state,
+            details: {
+                ...state.details,
+                [action.payload.name]: action.payload
+            },
+            detailsLoading: {...state.detailsLoading, [action.payload.name]: false}
+        }),
+        fetchPokemonDetailFailure: (state, action: PayloadAction<{ name: string, error: unknown }>) => ({
+            ...state,
+            detailsLoading: {...state.detailsLoading, [action.payload.name]: false},
+            detailsError: {...state.detailsError, [action.payload.name]: action.payload.error}
         })
     }
 })
@@ -76,11 +98,22 @@ export function getPokemonDetails(state: RootState, name: string) {
     return state.pokemons.details[name] ?? null
 }
 
+export function isPokemonDetailLoading(state: RootState, name: string) {
+    return state.pokemons.detailsLoading[name] ?? false
+}
+
+export function getPokemonDetailError(state: RootState, name: string) {
+    return state.pokemons.detailsError[name] ?? null
+}
+
 export const {
     fetchPokemonsStart,
     fetchPokemonsSuccess,
     fetchPokemonsFailure,
     setSelectedPokemon,
     setPokemonDetails,
+    fetchPokemonDetailStart,
+    fetchPokemonDetailSuccess,
+    fetchPokemonDetailFailure,
 } = pokemonSlice.actions
 export default pokemonSlice.reducer
