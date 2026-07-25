@@ -17,9 +17,8 @@ export function usePokemonDetail(name: string, url: string, reset: UseFormReset<
     const loading = dispatched || (!data && !error)
 
     useEffect(() => {
-        if (!data) dispatch(fetchPokemonDetailStart({name, url}))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (!data && !dispatched && !error) dispatch(fetchPokemonDetailStart({name, url}))
+    }, [data, dispatched, error, dispatch, name, url])
 
     useLayoutEffect(() => {
         if (data) reset(data)
