@@ -1,37 +1,44 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createEntityAdapter, createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
 import {Pokemon} from "../../lib/PokemonType.ts";
 import {RootState} from "../store-config.ts";
 
-export type CollectionState = {
-    items: Record<string, Pokemon>
+export type CollectionItem = {
+    id: string
+    pokemon: Pokemon
 }
 
-const initialState: CollectionState = {
-    items: {}
-}
+const collectionAdapter = createEntityAdapter<CollectionItem>()
 
 const collectionSlice = createSlice({
     name: "collection",
-    initialState,
+    initialState: collectionAdapter.getInitialState(),
     reducers: {
-        addToCollection: (state, action: PayloadAction<Pokemon>) => ({
-            ...state,
-            items: {...state.items, [action.payload.name]: action.payload}
-        }),
-        hydrateCollection: (state, action: PayloadAction<Pokemon[]>) => ({
-            ...state,
-            items: Object.fromEntries(action.payload.map((pokemon) => [pokemon.name, pokemon]))
-        })
+        addToCollection: {
+            reducer: collectionAdapter.addOne,
+            prepare: (pokemon: Pokemon) => ({
+                payload: {id: crypto.randomUUID(), pokemon}
+            })
+        },
+        hydrateCollection: (state, action: PayloadAction<CollectionItem[]>) => {
+            collectionAdapter.setAll(state, action.payload)
+        }
     }
 })
 
+const collectionSelectors = collectionAdapter.getSelectors<RootState>((state) => state.collection)
+
 export function getCollection(state: RootState) {
-    return Object.values(state.collection.items)
+    return collectionSelectors.selectAll(state)
 }
 
+const selectCollectedNames = createSelector(
+    (state: RootState) => collectionSelectors.selectAll(state),
+    (items) => new Set(items.map(({pokemon}) => pokemon.name))
+)
+
 export function isInCollection(state: RootState, name: string) {
-    return name in state.collection.items
+    return selectCollectedNames(state).has(name)
 }
 
 export function useCollection() {
