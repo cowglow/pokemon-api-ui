@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {fetchPokemonsStart, getSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
-import {addToCollection, hydrateCollection, useIsInCollection} from "./redux/reducers/collection.ts";
+import {hydrateCollection} from "./redux/reducers/collection.ts";
 import {getStoredCollection} from "./lib/collection-storage.ts";
 import {useEffect, useState} from "react";
 import SelectedPokemon from "./components/SelectedPokemon.tsx";
@@ -18,7 +18,6 @@ export default function App() {
     const [view, setView] = useState<AppView>("pokemons")
     const selectedPokemon = useSelector(getSelectedPokemon)
     const selectedDetails = usePokemonDetails(selectedPokemon?.name ?? "")
-    const alreadyInCollection = useIsInCollection(selectedPokemon?.name ?? "")
 
     useEffect(() => {
         dispatch(fetchPokemonsStart(REQUEST_LIMIT_DEFAULT))
@@ -28,10 +27,6 @@ export default function App() {
         dispatch(hydrateCollection(getStoredCollection()))
     }, [dispatch])
 
-    const onAddToCollection = () => {
-        if (selectedDetails) dispatch(addToCollection(selectedDetails))
-    }
-
     return (
         <Layout view={view} onViewChange={setView}>
             <ContentWrapper>
@@ -39,7 +34,7 @@ export default function App() {
                     <>
                         <PokemonList/>
                         <SelectedPokemon pokemon={selectedPokemon}/>
-                        <AddToCollection onClick={onAddToCollection} disabled={!selectedDetails || alreadyInCollection}/>
+                        <AddToCollection pokemon={selectedDetails}/>
                     </>
                 ) : (
                     <CollectionView/>

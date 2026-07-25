@@ -1,8 +1,14 @@
-import {Box, capitalize, Chip, Paper, styled, Typography} from "@mui/material";
+import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {Box, capitalize, Chip, IconButton, Paper, styled, Typography} from "@mui/material";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {Pokemon} from "../lib/PokemonType.ts";
 import {getTypeColor} from "../lib/type-colors.ts";
+import {removeFromCollection} from "../redux/reducers/collection.ts";
+import RemoveFromCollectionDialog from "./RemoveFromCollectionDialog.tsx";
 
 type PokemonCollectionCardProps = {
+    id: string
     pokemon: Pokemon
 }
 
@@ -27,22 +33,34 @@ const ArtworkFrame = styled(Box, {shouldForwardProp: shouldForwardAccent})<{ acc
     height: 140px;
 `
 
-export default function PokemonCollectionCard({pokemon}: PokemonCollectionCardProps) {
+export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCardProps) {
+    const dispatch = useDispatch()
+    const [confirmOpen, setConfirmOpen] = useState(false)
     const [primaryType] = pokemon.types
     const accent = getTypeColor(primaryType)
     const hp = pokemon.stats.find(({name}) => name === "hp")?.baseStat
 
+    const onConfirmRemove = () => {
+        dispatch(removeFromCollection(id))
+        setConfirmOpen(false)
+    }
+
     return (
         <CardShell elevation={3} accent={accent}>
-            <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "baseline"}}>
+            <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}>
                     {capitalize(pokemon.name)}
                 </Typography>
-                {hp !== undefined && (
-                    <Typography variant="caption" color="text.secondary">
-                        HP {hp}
-                    </Typography>
-                )}
+                <Box sx={{display: "flex", alignItems: "center", gap: 0.5}}>
+                    {hp !== undefined && (
+                        <Typography variant="caption" color="text.secondary">
+                            HP {hp}
+                        </Typography>
+                    )}
+                    <IconButton size="small" onClick={() => setConfirmOpen(true)} aria-label="remove from collection">
+                        <StarRoundedIcon fontSize="small" color="warning"/>
+                    </IconButton>
+                </Box>
             </Box>
             <ArtworkFrame accent={accent}>
                 {pokemon.avatar && (
@@ -59,6 +77,12 @@ export default function PokemonCollectionCard({pokemon}: PokemonCollectionCardPr
                           sx={{bgcolor: getTypeColor(type), color: "#fff"}}/>
                 ))}
             </Box>
+            <RemoveFromCollectionDialog
+                open={confirmOpen}
+                pokemonName={pokemon.name}
+                onConfirm={onConfirmRemove}
+                onClose={() => setConfirmOpen(false)}
+            />
         </CardShell>
     )
 }

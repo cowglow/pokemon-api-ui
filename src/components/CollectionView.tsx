@@ -13,7 +13,7 @@ export default function CollectionView() {
                         Your collection is empty
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Select a pokémon from the list and use the + button to add it to your collection.
+                        Select a pokémon from the list and use the star button to add it to your collection.
                     </Typography>
                 </Paper>
             </Box>
@@ -31,7 +31,7 @@ export default function CollectionView() {
             overflow: "auto",
         }}>
             {collection.map(({id, pokemon}) => (
-                <PokemonCollectionCard key={id} pokemon={pokemon}/>
+                <PokemonCollectionCard key={id} id={id} pokemon={pokemon}/>
             ))}
         </Paper>
     )

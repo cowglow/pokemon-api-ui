@@ -178,21 +178,22 @@ checked, not assumed.
 
 ## Phase 8 - Follow-ups added after the plan was "done" (done)
 
-Two small additions once every phase above had shipped:
+Several small additions once every phase above had shipped:
 
-- **Removing a pokémon from the collection.** The star next to the
-  name in `PokemonHeader` (shown when the viewed pokemon is collected)
-  is now a clickable `IconButton` opening `RemoveFromCollectionDialog.tsx`
-  (Keep/Delete). Confirming dispatches `removeFromCollection(id)` -
-  `collectionAdapter.removeOne` directly, no prepare callback needed
-  since the caller already has the entity id (a new memoized
-  `getCollectionItemId(name)` selector/`useCollectionItemId` hook,
-  mirroring `isInCollection`'s name-to-id `Map` derivation).
-  `removeFromCollection` was added alongside `addToCollection` to the
-  localStorage-sync saga's watched actions
+- **Removing a pokémon from the collection, take 1 (superseded).**
+  First cut: the star next to the name in `PokemonHeader` (shown when
+  the viewed pokemon is collected) was a clickable `IconButton` opening
+  `RemoveFromCollectionDialog.tsx`. Replaced in take 2 below - the star
+  next to the name didn't earn its place once the FAB itself could
+  carry the same information.
+  `removeFromCollection` (`collectionAdapter.removeOne`, no prepare
+  callback needed since the caller already has the entity id via
+  `getCollectionItemId(name)`/`useCollectionItemId`, mirroring
+  `isInCollection`'s name-to-id `Map` derivation) was added alongside
+  `addToCollection` to the localStorage-sync saga's watched actions
   (`takeEvery([addToCollection, removeFromCollection], ...)`) -
   otherwise a removal wouldn't persist and a stale entry would
-  resurrect on the next `hydrateCollection` read.
+  resurrect on the next `hydrateCollection` read. This part stands.
 - **A collection-only filter toggle in the list.** A single star
   `ToggleButton` next to the search field in `PokemonList`, composing
   with the existing text search. Checking collection membership across
@@ -202,6 +203,24 @@ Two small additions once every phase above had shipped:
   selector deriving a `Set<name>` from the existing name-to-id `Map`
   selector, so the whole list checks membership via a plain
   `Set.has()` inside the existing `filteredItems` computation instead.
+- **Removing a pokémon from the collection, take 2: the FAB itself is
+  now the star.** The header star was redundant once the FAB could
+  show the same state. `Fab/AddToCollection.tsx` is now a toggle:
+  `pokemon: Pokemon | null` is its only prop (derives
+  `inCollection`/the entity id itself via `useIsInCollection`/
+  `useCollectionItemId`, keyed off `pokemon?.name`) - shows an outline
+  star and adds directly when not collected, a filled star when
+  collected that opens the same `RemoveFromCollectionDialog` (adding
+  never needed confirmation; removing still does). `App.tsx` got
+  simpler as a result - it just passes the selected detail through,
+  no more `onAddToCollection`/`alreadyInCollection` plumbing.
+  `PokemonHeader` dropped the star/dialog entirely.
+  `PokemonCollectionCard` gained its own filled-star remove button (now
+  takes an `id` prop from `CollectionView`'s map, dispatching
+  `removeFromCollection(id)` directly - no name-based lookup needed
+  since the id is already in hand) so pokémon can be removed straight
+  from the "My Collection" grid instead of needing to reselect them in
+  the main list first.
 
 ## Later / not in scope now
 
