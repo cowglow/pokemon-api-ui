@@ -22,7 +22,8 @@ const collectionSlice = createSlice({
         },
         hydrateCollection: (state, action: PayloadAction<CollectionItem[]>) => {
             collectionAdapter.setAll(state, action.payload)
-        }
+        },
+        removeFromCollection: collectionAdapter.removeOne
     }
 })
 
@@ -32,13 +33,17 @@ export function getCollection(state: RootState) {
     return collectionSelectors.selectAll(state)
 }
 
-const selectCollectedNames = createSelector(
+const selectCollectionIdsByName = createSelector(
     (state: RootState) => collectionSelectors.selectAll(state),
-    (items) => new Set(items.map(({pokemon}) => pokemon.name))
+    (items) => new Map(items.map(({id, pokemon}) => [pokemon.name, id]))
 )
 
 export function isInCollection(state: RootState, name: string) {
-    return selectCollectedNames(state).has(name)
+    return selectCollectionIdsByName(state).has(name)
+}
+
+export function getCollectionItemId(state: RootState, name: string) {
+    return selectCollectionIdsByName(state).get(name)
 }
 
 export function useCollection() {
@@ -49,5 +54,9 @@ export function useIsInCollection(name: string) {
     return useSelector((state: RootState) => isInCollection(state, name))
 }
 
-export const {addToCollection, hydrateCollection} = collectionSlice.actions
+export function useCollectionItemId(name: string) {
+    return useSelector((state: RootState) => getCollectionItemId(state, name))
+}
+
+export const {addToCollection, hydrateCollection, removeFromCollection} = collectionSlice.actions
 export default collectionSlice.reducer

@@ -4,11 +4,11 @@ import {fetchPokemonDetailHandler} from "./saga-handlers/fetchPokemonDetailHandl
 import {syncSelectedPokemonUrlHandler} from "./saga-handlers/syncSelectedPokemonUrlHandler.ts";
 import {syncCollectionToLocalStorageHandler} from "./saga-handlers/syncCollectionToLocalStorageHandler.ts";
 import {fetchPokemonDetailStart, fetchPokemonsStart, setSelectedPokemon} from "./reducers/pokemons.ts";
-import {addToCollection} from "./reducers/collection.ts";
+import {addToCollection, removeFromCollection} from "./reducers/collection.ts";
 
 export function* watchSaga() {
     yield takeEvery(fetchPokemonsStart, fetchPokemonsHandler)
     yield takeEvery(fetchPokemonDetailStart, fetchPokemonDetailHandler)
     yield takeEvery(setSelectedPokemon, syncSelectedPokemonUrlHandler)
-    yield takeEvery(addToCollection, syncCollectionToLocalStorageHandler)
+    yield takeEvery([addToCollection, removeFromCollection], syncCollectionToLocalStorageHandler)
 }

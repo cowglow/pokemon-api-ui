@@ -1,7 +1,10 @@
-import {Box, capitalize, Skeleton, Typography} from "@mui/material";
+import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {Box, capitalize, IconButton, Skeleton, Typography} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import AnimatedSprite from "./AnimatedSprite.tsx";
-import {useIsInCollection} from "../redux/reducers/collection.ts";
+import RemoveFromCollectionDialog from "./RemoveFromCollectionDialog.tsx";
+import {removeFromCollection, useCollectionItemId, useIsInCollection} from "../redux/reducers/collection.ts";
 
 type PokemonHeaderProps = {
     name: string
@@ -10,7 +13,15 @@ type PokemonHeaderProps = {
 }
 
 export default function PokemonHeader({name, loading, spriteFrames}: PokemonHeaderProps) {
+    const dispatch = useDispatch()
     const inCollection = useIsInCollection(name)
+    const collectionItemId = useCollectionItemId(name)
+    const [confirmOpen, setConfirmOpen] = useState(false)
+
+    const onConfirmRemove = () => {
+        if (collectionItemId) dispatch(removeFromCollection(collectionItemId))
+        setConfirmOpen(false)
+    }
 
     return (
         <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
@@ -18,7 +29,17 @@ export default function PokemonHeader({name, loading, spriteFrames}: PokemonHead
                 <Typography variant="h4" component="h1">
                     {capitalize(name)}
                 </Typography>
-                {inCollection && <StarRoundedIcon color="warning" aria-label="in your collection"/>}
+                {inCollection && (
+                    <IconButton size="small" onClick={() => setConfirmOpen(true)} aria-label="remove from collection">
+                        <StarRoundedIcon color="warning"/>
+                    </IconButton>
+                )}
+                <RemoveFromCollectionDialog
+                    open={confirmOpen}
+                    pokemonName={name}
+                    onConfirm={onConfirmRemove}
+                    onClose={() => setConfirmOpen(false)}
+                />
             </Box>
             {loading && <Skeleton width={96} height={96}/>}
             {!loading && spriteFrames && spriteFrames.length > 0 && (

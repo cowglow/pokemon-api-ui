@@ -78,8 +78,19 @@ still stands, only the editing angle is gone).
   `localStorage` on every add; `App.tsx` reads `localStorage` once on
   mount and dispatches `hydrateCollection(items)` before anything else
   touches collection state.
-- No "remove from collection" affordance yet - not asked for; flag as
-  a natural follow-up once the add path is solid.
+- ~~No "remove from collection" affordance yet~~ **done** - the star
+  next to the name in `PokemonHeader` (shown when the viewed pokemon is
+  collected) is now a clickable `IconButton` opening
+  `RemoveFromCollectionDialog.tsx` (Keep/Delete). Confirming dispatches
+  `removeFromCollection(id)` - `collectionAdapter.removeOne` directly,
+  no prepare callback needed since the caller already knows the entity
+  id (resolved via a new memoized `getCollectionItemId(name)` selector/
+  `useCollectionItemId` hook, mirroring `isInCollection`'s
+  name-to-id `Map` derivation). `removeFromCollection` was added
+  alongside `addToCollection` to the localStorage-sync saga's watched
+  actions (`takeEvery([addToCollection, removeFromCollection], ...)`) -
+  otherwise a removal wouldn't persist and a stale entry would
+  resurrect on the next `hydrateCollection` read.
 
 ## Phase 4 - "My Collection" view (done)
 
