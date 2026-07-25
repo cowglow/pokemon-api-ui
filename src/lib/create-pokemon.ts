@@ -11,6 +11,7 @@ export default function createPokemon(data: PokemonResponse): Pokemon {
         height: data.height,
         weight: data.weight,
         spriteFrames: getSpriteFrames(data.sprites),
+        cries: data.cries,
         types: [...data.types]
             .sort((a, b) => a.slot - b.slot)
             .map(({type}) => type.name),

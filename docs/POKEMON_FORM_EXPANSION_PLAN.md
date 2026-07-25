@@ -95,7 +95,10 @@ panels):
   `PokemonHeader.tsx`, sitting above the tabs. Edit/Save/Cancel stay
   visible regardless of which tab is active, since they only ever act
   on the Overview fields.
-- Cries - audio players for `latest`/`legacy`. Not yet built.
+- ~~Cries~~ **done** - `Cries.tsx`, `<audio controls>` for `latest`/
+  `legacy`. `pokenode-ts`'s types don't cover `cries` at all (out of
+  date relative to the live API - same gap as `sprites.other.showdown`
+  noted earlier), so `PokemonCries` is hand-typed in `PokemonType.ts`.
 - ~~Sprites - gallery of the sprite variants~~ **done, but as a cosmetic
   animation instead of a gallery tab** - see `docs/SPRITE_ANIMATION.md`
   (its own doc, since it's a self-contained cosmetic effect rather than

@@ -34,9 +34,17 @@ export type PokemonAbilitySummary = {
     isHidden: boolean
 }
 
+// Not in pokenode-ts's PokemonSprites/etc. types (they're out of date
+// relative to the live API), so hand-typed here.
+export type PokemonCries = {
+    latest: string
+    legacy: string
+}
+
 export type Pokemon = PokemonAbstract & {
     abilities: PokemonAbilitySummary[]
     avatar: string | null
+    cries: PokemonCries
     experience: number
     forms?:PokemonForm[]
     height: number
@@ -60,6 +68,7 @@ export type Pokemon = PokemonAbstract & {
 export type PokemonResponse = {
     abilities: PokemonAbility[]
     base_experience: number
+    cries: PokemonCries
     forms: PokemonForm[]
     height: number
     id: number
