@@ -49,7 +49,12 @@ export default function PokemonList() {
             const prev = (localIndex - 1 + filteredItems.length) % filteredItems.length;
             itemRefs.current[prev]?.focus();
         }
-    }, [filteredItems]);
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const {index} = filteredItems[localIndex];
+            dispatch(setSelectedPokemon(pokemons[index]));
+        }
+    }, [filteredItems, dispatch, pokemons]);
 
     const assignRef = (localIndex: number) =>
         (el: HTMLButtonElement | null) => {
@@ -86,7 +91,6 @@ export default function PokemonList() {
                             ref={assignRef(localIndex)}
                             onKeyDown={(event) => onKeyDown(event, localIndex)}
                             onClick={() => dispatch(setSelectedPokemon(pokemons[index]))}
-                            onFocus={() => dispatch(setSelectedPokemon(pokemons[index]))}
                             selected={selectedTab === index}
                         >
                             <PokemonListIcon label={label} pokemonIndex={index + 1}/>
