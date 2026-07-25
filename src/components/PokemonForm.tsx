@@ -6,7 +6,9 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {setPokemonDetails} from "../redux/reducers/pokemons.ts";
 import {usePokemonDetail} from "./usePokemonDetail.ts";
-import AnimatedSprite from "./AnimatedSprite.tsx";
+import PokemonHeader from "./PokemonHeader.tsx";
+import PokemonDetailTabs from "./PokemonDetailTabs.tsx";
+import AbilitiesAndTypes from "./AbilitiesAndTypes.tsx";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
@@ -41,15 +43,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
     return (
         <FormProvider {...methods}>
             <StyledPokemonForm>
-                <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography variant="h4" component="h1">
-                        {capitalize(pokemonName)}
-                    </Typography>
-                    {loading && <Skeleton width={96} height={96}/>}
-                    {cachedDetails && cachedDetails.spriteFrames.length > 0 && (
-                        <AnimatedSprite frames={cachedDetails.spriteFrames} fps={3}/>
-                    )}
-                </Box>
+                <PokemonHeader name={pokemonName} loading={loading} spriteFrames={cachedDetails?.spriteFrames}/>
                 {detailError && (
                     <Typography color="error" variant="body2">
                         Failed to load {capitalize(pokemonName)}.
@@ -58,14 +52,33 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                 {loading && editableFields.map((key) => (
                     <Skeleton key={key} width="100%" height={56}/>
                 ))}
-                {cachedDetails && editableFields.map((key: Path<PokemonFormSchema>) => (
-                    <StyledTextInput
-                        key={key}
-                        label={capitalize(key)}
-                        disabled={!isEditing}
-                        {...methods.register(key)}
+                {cachedDetails && (
+                    <PokemonDetailTabs
+                        tabs={[
+                            {
+                                label: "Overview",
+                                content: (
+                                    <>
+                                        {editableFields.map((key: Path<PokemonFormSchema>) => (
+                                            <StyledTextInput
+                                                key={key}
+                                                label={capitalize(key)}
+                                                disabled={!isEditing}
+                                                {...methods.register(key)}
+                                            />
+                                        ))}
+                                    </>
+                                )
+                            },
+                            {
+                                label: "Abilities & Types",
+                                content: (
+                                    <AbilitiesAndTypes types={cachedDetails.types} abilities={cachedDetails.abilities}/>
+                                )
+                            }
+                        ]}
                     />
-                ))}
+                )}
                 {cachedDetails && (
                     <Box sx={{display: "flex", gap: 1, justifyContent: "flex-end"}}>
                         {isEditing ? (

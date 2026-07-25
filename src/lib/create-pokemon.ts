@@ -10,6 +10,12 @@ export default function createPokemon(data: PokemonResponse): Pokemon {
         experience: data.base_experience,
         height: data.height,
         weight: data.weight,
-        spriteFrames: getSpriteFrames(data.sprites)
+        spriteFrames: getSpriteFrames(data.sprites),
+        types: [...data.types]
+            .sort((a, b) => a.slot - b.slot)
+            .map(({type}) => type.name),
+        abilities: [...data.abilities]
+            .sort((a, b) => a.slot - b.slot)
+            .map(({ability, is_hidden}) => ({name: ability.name, isHidden: is_hidden}))
     }
 }

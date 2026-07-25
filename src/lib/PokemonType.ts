@@ -29,7 +29,13 @@ interface PokemonAbstract {
 // type PokemonFormsUrl = string
 // type PokemonForms = Record<PokemonFormsName, PokemonFormsUrl>
 
+export type PokemonAbilitySummary = {
+    name: string
+    isHidden: boolean
+}
+
 export type Pokemon = PokemonAbstract & {
+    abilities: PokemonAbilitySummary[]
     avatar: string | null
     experience: number
     forms?:PokemonForm[]
@@ -38,6 +44,7 @@ export type Pokemon = PokemonAbstract & {
     species?: PokemonSpecies[]
     spriteFrames: string[]
     stats?: PokemonStat[]
+    types: string[]
     weight: number
 }
 

@@ -75,18 +75,27 @@ actually available beyond what `createPokemon` currently maps
 | `held_items`, `past_abilities/stats/types`, `location_area_encounters` | mostly empty/rare | Skipping for now. |
 | `species` | `{name, url}` pointer only | Flavor text/genus lives at the species endpoint - would need a chained secondary fetch. Out of scope for now. |
 
-## 3. Proposed grouping (MUI Tabs)
+## 3. Proposed grouping (MUI Tabs) (in progress)
 
-**Editable core** (registered RHF inputs, current pattern):
-`name`, `height`, `weight`, `experience` (the field-name/`base_experience`
-mismatch found while touching this code is fixed as part of the saga
-change - see PR). `stats` is a good candidate to join this bucket since
-it's a fixed 6-key numeric shape.
+**Editable core** (registered RHF inputs, in an "Overview" tab):
+`height`, `weight`, `experience`. `name` was removed from this list -
+it's an identity/cache key (`details[name]`), not just data; editing
+it and saving silently created an orphaned cache entry instead of
+renaming anything visible. `stats` is a good candidate to join this
+bucket since it's a fixed 6-key numeric shape.
 
 **Reference/display tabs** (not scalar-editable, shown as read-only
 panels):
-- Abilities & Types - simple chip/list display, no extra fetch.
-- Cries - audio players for `latest`/`legacy`.
+- ~~Abilities & Types~~ **done** - `AbilitiesAndTypes.tsx`, a chip list
+  for `types` and `abilities` (hidden abilities marked and shown
+  outlined). `createPokemon` now maps `types: string[]` and
+  `abilities: {name, isHidden}[]`. Tabs themselves live in the new
+  generic `PokemonDetailTabs.tsx` (takes a `{label, content}[]` array),
+  and the name+avatar header was pulled out into its own
+  `PokemonHeader.tsx`, sitting above the tabs. Edit/Save/Cancel stay
+  visible regardless of which tab is active, since they only ever act
+  on the Overview fields.
+- Cries - audio players for `latest`/`legacy`. Not yet built.
 - ~~Sprites - gallery of the sprite variants~~ **done, but as a cosmetic
   animation instead of a gallery tab** - see `docs/SPRITE_ANIMATION.md`
   (its own doc, since it's a self-contained cosmetic effect rather than
