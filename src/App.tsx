@@ -1,8 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import {fetchPokemonsStart, getSelectedPokemon, resetPokemonDetails} from "./redux/reducers/pokemons.ts";
+import {fetchPokemonsStart, getSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
+import {addToCollection, hydrateCollection, useIsInCollection} from "./redux/reducers/collection.ts";
+import {getStoredCollection} from "./lib/collection-storage.ts";
 import {useEffect} from "react";
 import SelectedPokemon from "./components/SelectedPokemon.tsx";
-import ResetCache from "./components/Fab/ResetCache.tsx";
+import AddToCollection from "./components/Fab/AddToCollection.tsx";
 // import PokemonTabs from "./components/PokemonTabs.tsx";
 import Layout from "./ui/Layout.tsx";
 import {ContentWrapper} from "./App.Styled.ts";
@@ -11,13 +13,19 @@ import PokemonList from "./components/PokemonList.tsx";
 export default function App() {
     const dispatch = useDispatch()
     const selectedPokemon = useSelector(getSelectedPokemon)
+    const selectedDetails = usePokemonDetails(selectedPokemon?.name ?? "")
+    const alreadyInCollection = useIsInCollection(selectedPokemon?.name ?? "")
 
     useEffect(() => {
         dispatch(fetchPokemonsStart(200))
     }, [dispatch])
 
-    const onResetCache = () => {
-        dispatch(resetPokemonDetails())
+    useEffect(() => {
+        dispatch(hydrateCollection(getStoredCollection()))
+    }, [dispatch])
+
+    const onAddToCollection = () => {
+        if (selectedDetails) dispatch(addToCollection(selectedDetails))
     }
 
     return (
@@ -26,7 +34,7 @@ export default function App() {
                 <PokemonList/>
                 {/*<PokemonTabs/>*/}
                 <SelectedPokemon pokemon={selectedPokemon}/>
-                <ResetCache onClick={onResetCache}/>
+                <AddToCollection onClick={onAddToCollection} disabled={!selectedDetails || alreadyInCollection}/>
             </ContentWrapper>
         </Layout>
     );

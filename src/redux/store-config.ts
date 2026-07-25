@@ -1,12 +1,14 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import createSagaMiddleware from 'redux-saga';
 import pokemonReducers from "./reducers/pokemons.ts";
+import collectionReducers from "./reducers/collection.ts";
 import {watchSaga} from "./saga.ts";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = combineReducers({
     pokemons: pokemonReducers,
+    collection: collectionReducers,
 })
 
 export function setupStore(preloadedState: Partial<RootState>) {
