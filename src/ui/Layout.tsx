@@ -1,6 +1,5 @@
 import {PropsWithChildren} from "react";
 import Header, {AppView} from "./Header.tsx";
-import Footer from "./Footer.tsx";
 import {LayoutWrapper} from "../App.Styled.ts";
 
 type LayoutProps = PropsWithChildren<{
@@ -17,9 +16,6 @@ export default function Layout({children, view, onViewChange}: LayoutProps) {
             <main>
                 {children}
             </main>
-            <footer>
-                <Footer/>
-            </footer>
         </LayoutWrapper>
     )
 }

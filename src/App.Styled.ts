@@ -6,7 +6,7 @@ export const LayoutWrapper = styled(Box)`
     flex-direction: column;
     height: 100svh;
 
-    & > header, & > footer {
+    & > header {
         flex-shrink: 0;
     }
 
@@ -17,9 +17,7 @@ export const LayoutWrapper = styled(Box)`
 `
 export const ContentWrapper = styled(Paper)`
     display: flex;
-    flex: 1;
-    //height: 100%;
-    height: calc(100svh - 78px - 40px - 18px);
+    height: calc(100% - ${({theme}) => theme.spacing(2)});
     margin: ${({theme}) => theme.spacing(1)};
     padding: ${({theme}) => theme.spacing(0.5)};
     overflow: hidden;

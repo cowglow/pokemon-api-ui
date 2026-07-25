@@ -143,15 +143,27 @@ still stands, only the editing angle is gone).
   bundle, not just passing typecheck, by grepping `dist/assets/*.js`
   for the real `git rev-parse` output after building.
 
-## Phase 7 - Remove the Footer
+## Phase 7 - Remove the Footer (done)
 
-- Delete `Footer.tsx`, remove it from `Layout.tsx`, delete the
-  now-unused `assets/github-mark.svg` (only consumer was the Footer -
-  the repo link moves into the settings dialog instead).
-- `App.Styled.ts`'s `ContentWrapper` height calc
-  (`calc(100svh - 78px - 40px - 18px)`) has one of those magic numbers
-  accounting for footer height - needs adjusting once the footer is
-  gone, verified visually rather than guessed.
+Deleted `Footer.tsx`, its `<footer>` in `Layout.tsx`, and the
+now-unused `assets/github-mark.svg` (only consumer was the Footer - the
+repo link lives in the settings dialog now).
+
+`App.Styled.ts`'s `ContentWrapper` had a hardcoded
+`height: calc(100svh - 78px - 40px - 18px)`, one of those magic numbers
+accounting for footer height - replaced with
+`height: calc(100% - ${theme.spacing(2)})` instead of another magic
+constant. `100%` alone would have overflowed `main` by
+`ContentWrapper`'s own vertical margins (`theme.spacing(1)` top + bottom
+= `spacing(2)` total) since `height: 100%` doesn't account for a box's
+own margins; subtracting them keeps it exactly flush. `main`'s
+`flex: 1` (inside the `LayoutWrapper` flex column, which has a definite
+`100svh` height) is what gives `ContentWrapper`'s `100%` something
+concrete to resolve against in the first place. Verified visually
+(Playwright bounding-box check) rather than guessed - the previous
+approach's own commented-out `//height: 100%;` suggests someone tried
+this before and reverted without checking why, so this was double
+checked, not assumed.
 
 ## Later / not in scope now
 
