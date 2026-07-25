@@ -11,6 +11,7 @@ import PokemonDetailTabs from "./PokemonDetailTabs.tsx";
 import AbilitiesAndTypes from "./AbilitiesAndTypes.tsx";
 import Cries from "./Cries.tsx";
 import Stats from "./Stats.tsx";
+import Moves from "./Moves.tsx";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
@@ -85,6 +86,10 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                             {
                                 label: "Stats",
                                 content: <Stats stats={cachedDetails.stats}/>
+                            },
+                            {
+                                label: "Moves",
+                                content: <Moves moves={cachedDetails.moves}/>
                             }
                         ]}
                     />

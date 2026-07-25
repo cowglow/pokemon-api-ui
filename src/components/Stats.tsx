@@ -1,11 +1,12 @@
-import {Box, capitalize, LinearProgress, Typography} from "@mui/material";
+import {Box, LinearProgress, Typography} from "@mui/material";
 import {PokemonStatSummary} from "../lib/PokemonType.ts";
+import {formatKebabCase} from "../lib/format-name.ts";
 
 const MAX_BASE_STAT = 255
 
 function formatStatName(name: string) {
     if (name === "hp") return "HP"
-    return name.split("-").map(capitalize).join(" ")
+    return formatKebabCase(name)
 }
 
 type StatsProps = {

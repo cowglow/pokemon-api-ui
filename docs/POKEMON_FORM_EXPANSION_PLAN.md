@@ -109,9 +109,23 @@ panels):
   inputs. `createPokemon` maps `stats: {name, baseStat, effort}[]`
   (`PokemonStatSummary` in `PokemonType.ts`).
 
+- ~~Moves~~ **done** - `Moves.tsx`. Resolved the "how do we filter this"
+  question: a move can be relearned across many version groups
+  (different games), so `createPokemon` collapses each move's
+  `version_group_details` down to *one* representative row rather than
+  filtering to a specific version group - prefer the lowest level-up
+  level (the earliest way to learn it), else fall back to whatever
+  non-level-up method (machine/egg/tutor) is listed first. That turns
+  the per-move duplication into a flat, already-small list (86 moves
+  for Bulbasaur, comparable to the main pokemon list), sorted level-up
+  moves first (ascending by level) then everything else alphabetically.
+  Added a plain client-side text-filter box on top since 86 rows still
+  benefits from search. `formatKebabCase` (`lib/format-name.ts`) is a
+  small shared helper for the "razor-wind" -> "Razor Wind" formatting,
+  factored out of `Stats.tsx`'s inline version since `Moves.tsx` needed
+  the identical logic.
+
 **Deferred / later**:
-- Moves tab - needs version-group filtering first, otherwise it's an
-  unreadable 86-row dump.
 - `game_indices` - low value, maybe skip entirely or add as trivia only.
 - Species flavor text - would introduce a second chained API fetch;
   revisit once the above is settled.
@@ -120,5 +134,3 @@ panels):
 
 - Is a chained species-detail fetch (for flavor text) worth the added
   saga complexity?
-- How do we filter `moves` down to something browsable - latest version
-  group only? Search/filter UI?

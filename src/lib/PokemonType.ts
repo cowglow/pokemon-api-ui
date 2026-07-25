@@ -40,6 +40,12 @@ export type PokemonStatSummary = {
     effort: number
 }
 
+export type PokemonMoveSummary = {
+    name: string
+    method: string
+    level: number | null
+}
+
 // Not in pokenode-ts's PokemonSprites/etc. types (they're out of date
 // relative to the live API), so hand-typed here.
 export type PokemonCries = {
@@ -54,6 +60,7 @@ export type Pokemon = PokemonAbstract & {
     experience: number
     forms?:PokemonForm[]
     height: number
+    moves: PokemonMoveSummary[]
     name: string
     species?: PokemonSpecies[]
     spriteFrames: string[]
