@@ -57,7 +57,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
     return (
         <FormProvider {...methods}>
             <StyledPokemonForm>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                     <Typography variant="h4" component="h1">
                         {capitalize(pokemonName)}
                     </Typography>
@@ -87,7 +87,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                         />
                 })}
                 {!methods.formState.isLoading && (
-                    <Box display="flex" gap={1} justifyContent="flex-end">
+                    <Box sx={{display: "flex", gap: 1, justifyContent: "flex-end"}}>
                         {isEditing ? (
                             <>
                                 <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
