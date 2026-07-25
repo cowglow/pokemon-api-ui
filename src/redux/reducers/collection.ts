@@ -46,6 +46,15 @@ export function getCollectionItemId(state: RootState, name: string) {
     return selectCollectionIdsByName(state).get(name)
 }
 
+const selectCollectedNames = createSelector(
+    selectCollectionIdsByName,
+    (idsByName) => new Set(idsByName.keys())
+)
+
+export function getCollectedNames(state: RootState) {
+    return selectCollectedNames(state)
+}
+
 export function useCollection() {
     return useSelector(getCollection)
 }
@@ -56,6 +65,10 @@ export function useIsInCollection(name: string) {
 
 export function useCollectionItemId(name: string) {
     return useSelector((state: RootState) => getCollectionItemId(state, name))
+}
+
+export function useCollectedNames() {
+    return useSelector(getCollectedNames)
 }
 
 export const {addToCollection, hydrateCollection, removeFromCollection} = collectionSlice.actions

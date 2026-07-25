@@ -15,12 +15,15 @@ import {
     ListItemButton,
     ListItemText,
     Paper,
-    TextField
+    TextField,
+    ToggleButton
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import Loader from "./Loader.tsx";
 import React, {useCallback, useMemo, useRef, useState} from "react";
 import PokemonListIcon from "./PokemonListIcon.tsx";
+import {useCollectedNames} from "../redux/reducers/collection.ts";
 
 export default function PokemonList() {
     const dispatch = useDispatch()
@@ -28,15 +31,18 @@ export default function PokemonList() {
     const labels = useSelector(getPokemonNames)
     const pokemons = useSelector(getPokemons)
     const selectedTab = useSelector(getSelectedPokemonIndex)
+    const collectedNames = useCollectedNames()
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [search, setSearch] = useState("")
+    const [collectionOnly, setCollectionOnly] = useState(false)
 
     const filteredItems = useMemo(() => {
         const query = search.trim().toLowerCase()
         return labels
             .map((label, index) => ({label, index}))
             .filter(({label}) => !query || label.includes(query))
-    }, [labels, search])
+            .filter(({label}) => !collectionOnly || collectedNames.has(label))
+    }, [labels, search, collectionOnly, collectedNames])
 
     const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLButtonElement>, localIndex: number) => {
         if (e.key === "ArrowDown") {
@@ -63,23 +69,33 @@ export default function PokemonList() {
 
     return (
         <Paper sx={{display: "flex", flexDirection: "column", width: 360, contain: "content"}}>
-            <TextField
-                size="small"
-                placeholder="Search pokémon"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                fullWidth
-                sx={{p: 1}}
-                slotProps={{
-                    input: {
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchRoundedIcon fontSize="small"/>
-                            </InputAdornment>
-                        )
-                    }
-                }}
-            />
+            <Box sx={{display: "flex", alignItems: "center", gap: 1, p: 1}}>
+                <TextField
+                    size="small"
+                    placeholder="Search pokémon"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    fullWidth
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchRoundedIcon fontSize="small"/>
+                                </InputAdornment>
+                            )
+                        }
+                    }}
+                />
+                <ToggleButton
+                    value="collectionOnly"
+                    selected={collectionOnly}
+                    onChange={() => setCollectionOnly((value) => !value)}
+                    size="small"
+                    aria-label="show only collection"
+                >
+                    <StarRoundedIcon fontSize="small"/>
+                </ToggleButton>
+            </Box>
             <Divider/>
             <Box sx={{overflow: "auto"}}>
                 <List component="nav" disablePadding dense tabIndex={-1}>
