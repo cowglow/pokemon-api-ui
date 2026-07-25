@@ -33,7 +33,7 @@ export default function PokemonList() {
     }, [labels]);
 
     const assignRef = (index: number) =>
-        (el: HTMLButtonElement) => itemRefs.current[index] = el
+        (el: HTMLButtonElement | null) => { itemRefs.current[index] = el }
 
     return (
         <Box sx={{minWidth: '340px', contain: "content", overflow: "auto"}}>
