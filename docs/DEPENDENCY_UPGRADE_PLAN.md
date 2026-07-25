@@ -1,6 +1,6 @@
 # Dependency Upgrade Plan
 
-Generated 2026-07-25 from `npm outdated` / `npm audit` against the current `package.json`.
+Generated 2026-07-25 from `npm outdated` / `npm audit` against the current `../package.json`.
 
 ## Current state
 
@@ -28,7 +28,7 @@ These stay within their current major version. No expected API breakage.
 
 **Instructions:**
 1. Create a branch: `git checkout -b deps/phase-1-patch-updates`
-2. `npm install <pkg>@<target>` for each row above (or bump ranges in `package.json` and run `npm install`).
+2. `npm install <pkg>@<target>` for each row above (or bump ranges in `../package.json` and run `npm install`).
 3. Run `npm audit` again — the Vite high-severity findings should clear. Note remaining findings (likely `@hookform/devtools`'s `uuid` dep and `cosmiconfig`'s `yaml` dep) are dev-only and low urgency; re-evaluate once `@hookform/devtools` publishes a fix, don't force-fix them.
 4. Run `npm run build` and `npm run lint`.
 5. Manually smoke-test the app (`npm run dev`): list loads, keyboard navigation, detail form fetch/select, GitHub Pages base path unaffected.
@@ -41,7 +41,7 @@ Each of these is a real migration with its own breaking-change surface. Do **not
 ### 2a. Vite 7 → 8 (+ `@vitejs/plugin-react` 4→6, `vite-plugin-checker` 0.11→0.14, `vite-plugin-svgr` 4→5)
 - Read Vite 8 migration guide; confirm Node version compatibility (project currently on Node 24, should be fine).
 - Bump `vite`, `@vitejs/plugin-react`, `vite-plugin-checker`, `vite-plugin-svgr` together since they're coupled to the Vite plugin API.
-- Verify `vite.config.ts` still builds and the GitHub Pages base-path config still works (`npm run build && npm run preview`).
+- Verify `../vite.config.ts` still builds and the GitHub Pages base-path config still works (`npm run build && npm run preview`).
 
 ### 2b. ESLint 9 → 10 (+ `eslint-plugin-react-hooks` 5→7, `globals` 16→17)
 - Check flat-config compatibility; `eslint-plugin-react-hooks` 7.x targets ESLint 9/10 — verify current `eslint.config.*` still parses.
