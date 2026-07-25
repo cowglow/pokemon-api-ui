@@ -1,4 +1,4 @@
-import {capitalize, Skeleton, styled, Typography} from "@mui/material";
+import {Box, capitalize, Skeleton, styled, Typography} from "@mui/material";
 import {StyledForm, StyledTextInput} from "./RHF/FormComponet.Styled.ts";
 import {usePokemonDetail} from "./usePokemonDetail.ts";
 import PokemonHeader from "./PokemonHeader.tsx";
@@ -40,7 +40,7 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                         {
                             label: "Overview",
                             content: (
-                                <>
+                                <Box sx={{display: "flex", flexDirection: "column", gap: 4, my: 2}}>
                                     {displayFields.map((key) => (
                                         <StyledTextInput
                                             key={key}
@@ -50,13 +50,14 @@ export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) 
                                             value={cachedDetails[key]}
                                         />
                                     ))}
-                                </>
+                                </Box>
                             )
                         },
                         {
                             label: "Abilities & Types",
                             content: (
-                                <AbilitiesAndTypes types={cachedDetails.types} abilities={cachedDetails.abilities}/>
+                                <AbilitiesAndTypes types={cachedDetails.types}
+                                                   abilities={cachedDetails.abilities}/>
                             )
                         },
                         {

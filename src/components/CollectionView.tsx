@@ -21,19 +21,18 @@ export default function CollectionView() {
     }
 
     return (
-        <Box sx={{
+        <Paper sx={{
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
             alignContent: "flex-start",
-            gap: 2,
-            p: 2,
-            width: "100%",
-            overflow: "auto"
+            gap: 4,
+            p: 4,
+            overflow: "auto",
         }}>
             {collection.map(({id, pokemon}) => (
                 <PokemonCollectionCard key={id} pokemon={pokemon}/>
             ))}
-        </Box>
+        </Paper>
     )
 }

@@ -1,12 +1,22 @@
-import {styled} from "@mui/material";
+import {Box, styled} from "@mui/material";
 import {useSpriteAnimation} from "./useSpriteAnimation.ts";
 
+const SpriteWrapper = styled(Box, {shouldForwardProp: (prop) => prop !== "$size"})<{ $size: number }>`
+    width: ${({$size}) => $size}px;
+    height: ${({$size}) => $size}px;
+    max-width: 100%; /* Makes the box responsive on tiny screens */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: ${({theme}) => `thin solid ${theme.palette.primary.dark}`};
+`
 const Image = styled('img')<{ $size: number }>`
     padding: 0;
     margin: 0;
-    width: ${({$size}) => $size}px;
-    height: ${({$size}) => $size}px;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Alternatives: 'cover' or 'scale-down' */
     image-rendering: pixelated;
 `;
 
@@ -19,5 +29,9 @@ type AnimatedSpriteProps = {
 export default function AnimatedSprite({frames, fps = 3, size = 96}: AnimatedSpriteProps) {
     const currentFrame = useSpriteAnimation(frames, fps)
     if (!currentFrame) return null
-    return <Image src={currentFrame} alt="" $size={size}/>
+    return (
+        <SpriteWrapper $size={size}>
+            <Image src={currentFrame} alt="" $size={size}/>
+        </SpriteWrapper>
+    )
 }

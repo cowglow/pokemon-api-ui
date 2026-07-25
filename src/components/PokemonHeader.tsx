@@ -24,9 +24,9 @@ export default function PokemonHeader({name, loading, spriteFrames}: PokemonHead
     }
 
     return (
-        <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-            <Box sx={{display: "flex", alignItems: "center", gap: 0.5}}>
-                <Typography variant="h4" component="h1">
+        <Box sx={{display: "flex", alignItems: "flex-end", justifyContent: "space-between"}}>
+            <Box sx={{display: "flex", alignItems: "flex-start", gap: 0.5}}>
+                <Typography variant="h1" component="h1">
                     {capitalize(name)}
                 </Typography>
                 {inCollection && (
@@ -43,7 +43,7 @@ export default function PokemonHeader({name, loading, spriteFrames}: PokemonHead
             </Box>
             {loading && <Skeleton width={96} height={96}/>}
             {!loading && spriteFrames && spriteFrames.length > 0 && (
-                <AnimatedSprite frames={spriteFrames} fps={3}/>
+                <AnimatedSprite frames={spriteFrames} fps={1}/>
             )}
         </Box>
     )
