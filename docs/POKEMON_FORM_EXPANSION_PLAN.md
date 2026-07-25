@@ -2,7 +2,15 @@
 
 Captures the discussion on (1) moving detail-fetching to a redux-saga
 and (2) extending `createPokemon`/the form with more of the PokeAPI
-response. Part 1 is being implemented now; the rest is future work.
+response. Part 1 is done; the data-shape rationale in part 2/3 below
+still stands.
+
+**Editing was removed entirely** (see `docs/COLLECTION_PLAN.md`) - the
+app shows read-only API data and lets users save pokémon to a personal
+collection instead. This doc's original "editable core" framing and
+open question about whether `stats` should be editable are moot; only
+the parts describing how `createPokemon` maps the raw API response
+into display data remain relevant.
 
 ## 1. Detail fetching: saga instead of inline `fetch` (done)
 
@@ -75,25 +83,22 @@ actually available beyond what `createPokemon` currently maps
 | `held_items`, `past_abilities/stats/types`, `location_area_encounters` | mostly empty/rare | Skipping for now. |
 | `species` | `{name, url}` pointer only | Flavor text/genus lives at the species endpoint - would need a chained secondary fetch. Out of scope for now. |
 
-## 3. Proposed grouping (MUI Tabs) (in progress)
+## 3. Tabs (done) - data-shape notes
 
-**Editable core** (registered RHF inputs, in an "Overview" tab):
-`height`, `weight`, `experience`. `name` was removed from this list -
-it's an identity/cache key (`details[name]`), not just data; editing
-it and saving silently created an orphaned cache entry instead of
-renaming anything visible.
+`name` was removed from the form entirely (not just made read-only) -
+it's an identity/cache key (`details[name]`), not just data; editing it
+and saving used to silently create an orphaned cache entry instead of
+renaming anything visible. The other fields (`height`/`weight`/
+`experience`) are now plain read-only display, not registered editable
+inputs - see `docs/COLLECTION_PLAN.md`.
 
-**Reference/display tabs** (not scalar-editable, shown as read-only
-panels):
 - ~~Abilities & Types~~ **done** - `AbilitiesAndTypes.tsx`, a chip list
   for `types` and `abilities` (hidden abilities marked and shown
   outlined). `createPokemon` now maps `types: string[]` and
   `abilities: {name, isHidden}[]`. Tabs themselves live in the new
   generic `PokemonDetailTabs.tsx` (takes a `{label, content}[]` array),
   and the name+avatar header was pulled out into its own
-  `PokemonHeader.tsx`, sitting above the tabs. Edit/Save/Cancel stay
-  visible regardless of which tab is active, since they only ever act
-  on the Overview fields.
+  `PokemonHeader.tsx`, sitting above the tabs.
 - ~~Cries~~ **done** - `Cries.tsx`, `<audio controls>` for `latest`/
   `legacy`. `pokenode-ts`'s types don't cover `cries` at all (out of
   date relative to the live API - same gap as `sprites.other.showdown`
