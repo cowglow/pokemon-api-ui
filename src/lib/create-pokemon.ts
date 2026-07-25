@@ -17,6 +17,7 @@ export default function createPokemon(data: PokemonResponse): Pokemon {
             .map(({type}) => type.name),
         abilities: [...data.abilities]
             .sort((a, b) => a.slot - b.slot)
-            .map(({ability, is_hidden}) => ({name: ability.name, isHidden: is_hidden}))
+            .map(({ability, is_hidden}) => ({name: ability.name, isHidden: is_hidden})),
+        stats: data.stats.map(({stat, base_stat, effort}) => ({name: stat.name, baseStat: base_stat, effort}))
     }
 }

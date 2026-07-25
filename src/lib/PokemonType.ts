@@ -34,6 +34,12 @@ export type PokemonAbilitySummary = {
     isHidden: boolean
 }
 
+export type PokemonStatSummary = {
+    name: string
+    baseStat: number
+    effort: number
+}
+
 // Not in pokenode-ts's PokemonSprites/etc. types (they're out of date
 // relative to the live API), so hand-typed here.
 export type PokemonCries = {
@@ -51,7 +57,7 @@ export type Pokemon = PokemonAbstract & {
     name: string
     species?: PokemonSpecies[]
     spriteFrames: string[]
-    stats?: PokemonStat[]
+    stats: PokemonStatSummary[]
     types: string[]
     weight: number
 }

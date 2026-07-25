@@ -81,8 +81,7 @@ actually available beyond what `createPokemon` currently maps
 `height`, `weight`, `experience`. `name` was removed from this list -
 it's an identity/cache key (`details[name]`), not just data; editing
 it and saving silently created an orphaned cache entry instead of
-renaming anything visible. `stats` is a good candidate to join this
-bucket since it's a fixed 6-key numeric shape.
+renaming anything visible.
 
 **Reference/display tabs** (not scalar-editable, shown as read-only
 panels):
@@ -103,6 +102,12 @@ panels):
   animation instead of a gallery tab** - see `docs/SPRITE_ANIMATION.md`
   (its own doc, since it's a self-contained cosmetic effect rather than
   part of this data/form-expansion track).
+- ~~Stats~~ **done, reference-only** - `Stats.tsx`, resolving the open
+  question below in favor of read-only. Each of the 6 stats renders as
+  a name + value + an MUI `LinearProgress` meter normalized against
+  255 (the game's canonical per-stat max), rather than editable numeric
+  inputs. `createPokemon` maps `stats: {name, baseStat, effort}[]`
+  (`PokemonStatSummary` in `PokemonType.ts`).
 
 **Deferred / later**:
 - Moves tab - needs version-group filtering first, otherwise it's an
@@ -113,8 +118,6 @@ panels):
 
 ## Open questions for the deferred work
 
-- Should `stats` actually be user-editable, or reference-only like
-  abilities/types?
 - Is a chained species-detail fetch (for flavor text) worth the added
   saga complexity?
 - How do we filter `moves` down to something browsable - latest version
