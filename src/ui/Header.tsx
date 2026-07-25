@@ -1,7 +1,7 @@
-import {AppBar, Box, IconButton, Menu, MenuItem, Toolbar} from "@mui/material";
+import {AppBar, Box, Drawer, IconButton, List, ListItemButton, ListItemText, Toolbar} from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import {MouseEvent, useState} from "react";
+import {useState} from "react";
 import Branding from "../components/Branding.tsx";
 import SettingsDialog from "../components/SettingsDialog.tsx";
 
@@ -13,11 +13,10 @@ type HeaderProps = {
 }
 
 export default function Header({view, onViewChange}: HeaderProps) {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+    const [menuOpen, setMenuOpen] = useState(false)
     const [settingsOpen, setSettingsOpen] = useState(false)
 
-    const openMenu = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
-    const closeMenu = () => setAnchorEl(null)
+    const closeMenu = () => setMenuOpen(false)
 
     const selectView = (next: AppView) => {
         onViewChange(next)
@@ -27,18 +26,22 @@ export default function Header({view, onViewChange}: HeaderProps) {
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton color="inherit" edge="start" onClick={openMenu} aria-label="navigation menu">
+                <IconButton color="inherit" edge="start" onClick={() => setMenuOpen(true)} aria-label="navigation menu">
                     <MenuRoundedIcon/>
                 </IconButton>
                 <Branding/>
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={closeMenu}>
-                    <MenuItem selected={view === "pokemons"} onClick={() => selectView("pokemons")}>
-                        Pokémon
-                    </MenuItem>
-                    <MenuItem selected={view === "collection"} onClick={() => selectView("collection")}>
-                        My Collection
-                    </MenuItem>
-                </Menu>
+                <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
+                    <Box sx={{width: 240}} role="presentation">
+                        <List>
+                            <ListItemButton selected={view === "pokemons"} onClick={() => selectView("pokemons")}>
+                                <ListItemText primary="Pokémon"/>
+                            </ListItemButton>
+                            <ListItemButton selected={view === "collection"} onClick={() => selectView("collection")}>
+                                <ListItemText primary="My Collection"/>
+                            </ListItemButton>
+                        </List>
+                    </Box>
+                </Drawer>
                 <Box sx={{flexGrow: 1}}/>
                 <IconButton color="inherit" onClick={() => setSettingsOpen(true)} aria-label="settings">
                     <SettingsRoundedIcon/>

@@ -1,5 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
-import {fetchPokemonsStart, getSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
+import {useMediaQuery, useTheme} from "@mui/material";
+import {fetchPokemonsStart, getSelectedPokemon, setSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
 import {hydrateCollection} from "./redux/reducers/collection.ts";
 import {getStoredCollection} from "./lib/collection-storage.ts";
 import {useEffect, useState} from "react";
@@ -15,6 +16,8 @@ import {REQUEST_LIMIT_DEFAULT} from "./lib/constants.ts";
 
 export default function App() {
     const dispatch = useDispatch()
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [view, setView] = useState<AppView>("pokemons")
     const selectedPokemon = useSelector(getSelectedPokemon)
     const selectedDetails = usePokemonDetails(selectedPokemon?.name ?? "")
@@ -27,14 +30,24 @@ export default function App() {
         dispatch(hydrateCollection(getStoredCollection()))
     }, [dispatch])
 
+    const showDetail = !isMobile || Boolean(selectedPokemon)
+    const showList = !isMobile || !selectedPokemon
+
     return (
         <Layout view={view} onViewChange={setView}>
             <ContentWrapper>
                 {view === "pokemons" ? (
                     <>
-                        <PokemonList/>
-                        <SelectedPokemon pokemon={selectedPokemon}/>
-                        <AddToCollection pokemon={selectedDetails}/>
+                        {showList && <PokemonList/>}
+                        {showDetail && (
+                            <>
+                                <SelectedPokemon
+                                    pokemon={selectedPokemon}
+                                    onBack={isMobile ? () => dispatch(setSelectedPokemon(null)) : undefined}
+                                />
+                                <AddToCollection pokemon={selectedDetails}/>
+                            </>
+                        )}
                     </>
                 ) : (
                     <CollectionView/>

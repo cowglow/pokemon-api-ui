@@ -19,7 +19,8 @@ export default function PokemonDetailTabs({tabs}: PokemonDetailTabsProps) {
 
     return (
         <Box>
-            <Tabs value={activeTab} onChange={onChange} aria-label="Pokémon detail tabs">
+            <Tabs value={activeTab} onChange={onChange} aria-label="Pokémon detail tabs"
+                  variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
                 {tabs.map((tab, index) => (
                     <Tab
                         key={tab.label}

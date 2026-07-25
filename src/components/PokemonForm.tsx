@@ -19,13 +19,15 @@ const displayFields = ["height", "weight", "experience"] as const
 type PokemonFormProps = {
     name: string
     url: string
+    onBack?: () => void
 }
-export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) {
+export default function PokemonForm({name: pokemonName, url, onBack}: PokemonFormProps) {
     const {data: cachedDetails, loading, error: detailError} = usePokemonDetail(pokemonName, url)
 
     return (
         <StyledPokemonForm>
-            <PokemonHeader name={pokemonName} loading={loading} spriteFrames={cachedDetails?.spriteFrames}/>
+            <PokemonHeader name={pokemonName} loading={loading} spriteFrames={cachedDetails?.spriteFrames}
+                           onBack={onBack}/>
             {detailError && (
                 <Typography color="error" variant="body2">
                     Failed to load {capitalize(pokemonName)}.

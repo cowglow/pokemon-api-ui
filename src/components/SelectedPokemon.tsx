@@ -3,11 +3,12 @@ import PokemonForm from "./PokemonForm.tsx";
 
 interface SelectedPokemonProps {
     pokemon: Pokemon | null
+    onBack?: () => void
 }
 
-export default function SelectedPokemon({pokemon}: SelectedPokemonProps) {
+export default function SelectedPokemon({pokemon, onBack}: SelectedPokemonProps) {
     if (!pokemon) return null
     return (
-        <PokemonForm key={`form-${pokemon.name}`} name={pokemon.name} url={pokemon.url}/>
+        <PokemonForm key={`form-${pokemon.name}`} name={pokemon.name} url={pokemon.url} onBack={onBack}/>
     )
 }

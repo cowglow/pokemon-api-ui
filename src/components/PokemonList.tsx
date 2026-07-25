@@ -68,7 +68,7 @@ export default function PokemonList() {
         }
 
     return (
-        <Paper sx={{display: "flex", flexDirection: "column", width: 360, contain: "content"}}>
+        <Paper sx={{display: "flex", flexDirection: "column", width: {xs: "100%", sm: 360}, contain: "content"}}>
             <Box sx={{display: "flex", alignItems: "center", gap: 1, p: 1}}>
                 <TextField
                     size="small"
