@@ -21,7 +21,7 @@ type PokemonFormProps = {
     url: string
 }
 export default function PokemonForm({name: pokemonName, url}: PokemonFormProps) {
-    const editableFields = ["name", "height", "weight", "experience"] as const
+    const editableFields = ["height", "weight", "experience"] as const
     const [isEditing, setIsEditing] = useState(false)
     const dispatch = useDispatch()
     const methods = useForm<PokemonFormSchema>()
