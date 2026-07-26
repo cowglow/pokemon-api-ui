@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useMediaQuery, useTheme} from "@mui/material";
-import {fetchPokemonsStart, getSelectedPokemon, setSelectedPokemon, usePokemonDetails} from "./redux/reducers/pokemons.ts";
+import {fetchPokemonsStart, getSelectedPokemon, setSelectedPokemon} from "./redux/reducers/pokemons.ts";
 import {hydrateCollection} from "./redux/reducers/collection.ts";
 import {getStoredCollection} from "./lib/collection-storage.ts";
 import {hydrateUserName} from "./redux/reducers/user.ts";
@@ -10,7 +10,6 @@ import SelectedPokemon from "./components/SelectedPokemon.tsx";
 import AddToCollection from "./components/Fab/AddToCollection.tsx";
 import CollectionView from "./components/CollectionView.tsx";
 import NamePromptDialog from "./components/NamePromptDialog.tsx";
-// import PokemonTabs from "./components/PokemonTabs.tsx";
 import Layout from "./ui/Layout.tsx";
 import {AppView} from "./ui/Header.tsx";
 import {ContentWrapper} from "./App.Styled.ts";
@@ -23,7 +22,6 @@ export default function App() {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [view, setView] = useState<AppView>("pokemons")
     const selectedPokemon = useSelector(getSelectedPokemon)
-    const selectedDetails = usePokemonDetails(selectedPokemon?.name ?? "")
 
     useEffect(() => {
         dispatch(fetchPokemonsStart(REQUEST_LIMIT_DEFAULT))
@@ -53,7 +51,7 @@ export default function App() {
                                     pokemon={selectedPokemon}
                                     onBack={isMobile ? () => dispatch(setSelectedPokemon(null)) : undefined}
                                 />
-                                <AddToCollection pokemon={selectedDetails}/>
+                                <AddToCollection pokemon={selectedPokemon}/>
                             </>
                         )}
                     </>

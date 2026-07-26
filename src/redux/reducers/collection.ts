@@ -1,6 +1,6 @@
 import {createEntityAdapter, createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
-import {Pokemon} from "../../lib/PokemonType.ts";
+import {Pokemon} from "../../types/pokemon.ts";
 import {RootState} from "../store-config.ts";
 
 export type CollectionItem = {

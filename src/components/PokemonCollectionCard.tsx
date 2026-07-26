@@ -1,8 +1,9 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
-import {Box, capitalize, Chip, IconButton, Paper, styled, Typography} from "@mui/material";
+import {Box, capitalize, Chip, IconButton, Paper, Skeleton, styled, Typography} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import {Pokemon} from "../lib/PokemonType.ts";
+import {Pokemon} from "../types/pokemon.ts";
+import {usePokemonDetail} from "./usePokemonDetail.ts";
 import {getTypeColor} from "../lib/type-colors.ts";
 import {removeFromCollection} from "../redux/reducers/collection.ts";
 import RemoveFromCollectionDialog from "./RemoveFromCollectionDialog.tsx";
@@ -36,9 +37,10 @@ const ArtworkFrame = styled(Box, {shouldForwardProp: shouldForwardAccent})<{ acc
 export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCardProps) {
     const dispatch = useDispatch()
     const [confirmOpen, setConfirmOpen] = useState(false)
-    const [primaryType] = pokemon.types
-    const accent = getTypeColor(primaryType)
-    const hp = pokemon.stats.find(({name}) => name === "hp")?.baseStat
+    const {data, loading} = usePokemonDetail(pokemon.name, pokemon.url)
+    const [primaryType] = data?.types ?? []
+    const accent = getTypeColor(primaryType ?? "")
+    const hp = data?.stats.find(({name}) => name === "hp")?.baseStat
 
     const onConfirmRemove = () => {
         dispatch(removeFromCollection(id))
@@ -63,8 +65,9 @@ export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCa
                 </Box>
             </Box>
             <ArtworkFrame accent={accent}>
-                {pokemon.avatar && (
-                    <Box component="img" src={pokemon.avatar} alt="" sx={{
+                {loading && <Skeleton variant="circular" width={96} height={96}/>}
+                {data?.avatar && (
+                    <Box component="img" src={data.avatar} alt="" sx={{
                         width: 96,
                         height: 96,
                         imageRendering: "pixelated"
@@ -72,7 +75,7 @@ export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCa
                 )}
             </ArtworkFrame>
             <Box sx={{display: "flex", gap: 0.5, flexWrap: "wrap", justifyContent: "center"}}>
-                {pokemon.types.map((type) => (
+                {data?.types.map((type) => (
                     <Chip key={type} label={capitalize(type)} size="small"
                           sx={{bgcolor: getTypeColor(type), color: "#fff"}}/>
                 ))}

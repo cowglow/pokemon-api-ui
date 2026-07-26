@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Fab} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import {Pokemon} from "../../lib/PokemonType.ts";
+import {Pokemon} from "../../types/pokemon.ts";
 import {
     addToCollection,
     removeFromCollection,
