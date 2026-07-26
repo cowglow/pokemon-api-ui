@@ -44,7 +44,7 @@ export default function App() {
             <ContentWrapper>
                 {view === "pokemons" ? (
                     <>
-                        {showList && <PokemonList/>}
+                        <PokemonList hidden={!showList}/>
                         {showDetail && (
                             <>
                                 <SelectedPokemon

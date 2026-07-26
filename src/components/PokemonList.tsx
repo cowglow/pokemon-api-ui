@@ -25,7 +25,11 @@ import React, {useCallback, useMemo, useRef, useState} from "react";
 import PokemonListIcon from "./PokemonListIcon.tsx";
 import {useCollectedNames} from "../redux/reducers/collection.ts";
 
-export default function PokemonList() {
+type PokemonListProps = {
+    hidden?: boolean
+}
+
+export default function PokemonList({hidden = false}: PokemonListProps) {
     const theme = useTheme()
     const dispatch = useDispatch()
     const loading = useSelector(isLoading)
@@ -69,7 +73,12 @@ export default function PokemonList() {
         }
 
     return (
-        <Paper sx={{display: "flex", flexDirection: "column", width: {xs: "100%", sm: 360}, contain: "content"}}>
+        <Paper sx={{
+            display: hidden ? "none" : "flex",
+            flexDirection: "column",
+            width: {xs: "100%", sm: 360},
+            contain: "content"
+        }}>
             <Box sx={{display: "flex", alignItems: "center", gap: 1, p: 1}}>
                 <TextField
                     size="small"

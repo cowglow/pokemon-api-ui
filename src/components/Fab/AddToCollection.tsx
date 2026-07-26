@@ -44,7 +44,7 @@ export default function AddToCollection({pokemon}: AddToCollectionProps) {
                 size="medium"
                 onClick={onClick}
                 disabled={!pokemon}
-                sx={{position: "absolute", bottom: 33, right: 33}}
+                sx={{position: "fixed", bottom: 33, right: 33}}
             >
                 <StarRoundedIcon color={inCollection ? "inherit" : "disabled"}/>
             </Fab>

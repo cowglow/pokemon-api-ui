@@ -2,6 +2,7 @@ import {createEntityAdapter, createSelector, createSlice, PayloadAction} from "@
 import {useSelector} from "react-redux";
 import {Pokemon} from "../../types/pokemon.ts";
 import {RootState} from "../store-config.ts";
+import {generateId} from "../../lib/random.ts";
 
 export type CollectionItem = {
     id: string
@@ -17,7 +18,7 @@ const collectionSlice = createSlice({
         addToCollection: {
             reducer: collectionAdapter.addOne,
             prepare: (pokemon: Pokemon) => ({
-                payload: {id: crypto.randomUUID(), pokemon}
+                payload: {id: generateId(), pokemon}
             })
         },
         hydrateCollection: (state, action: PayloadAction<CollectionItem[]>) => {
