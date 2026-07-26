@@ -1,6 +1,6 @@
 import {Box, capitalize, Skeleton, styled, Typography} from "@mui/material";
 import {StyledForm, StyledTextInput} from "./RHF/FormComponet.Styled.ts";
-import {usePokemonDetail} from "./usePokemonDetail.ts";
+import {usePokemonDetail} from "../hooks/usePokemonDetail.ts";
 import PokemonHeader from "./PokemonHeader.tsx";
 import PokemonDetailTabs from "./PokemonDetailTabs.tsx";
 import AbilitiesAndTypes from "./AbilitiesAndTypes.tsx";

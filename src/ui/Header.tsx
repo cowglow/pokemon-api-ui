@@ -2,26 +2,20 @@ import {AppBar, Box, Drawer, IconButton, List, ListItemButton, ListItemText, Too
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import {useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
 import Branding from "../components/Branding.tsx";
-import SettingsDialog from "../components/SettingsDialog.tsx";
 import {useUserName} from "../redux/reducers/user.ts";
 
-export type AppView = "pokemons" | "collection"
-
-type HeaderProps = {
-    view: AppView
-    onViewChange: (view: AppView) => void
-}
-
-export default function Header({view, onViewChange}: HeaderProps) {
+export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false)
-    const [settingsOpen, setSettingsOpen] = useState(false)
     const userName = useUserName()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const closeMenu = () => setMenuOpen(false)
 
-    const selectView = (next: AppView) => {
-        onViewChange(next)
+    const selectView = (path: string) => {
+        navigate(path)
         closeMenu()
     }
 
@@ -35,20 +29,19 @@ export default function Header({view, onViewChange}: HeaderProps) {
                 <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
                     <Box sx={{width: 240}} role="presentation">
                         <List>
-                            <ListItemButton selected={view === "pokemons"} onClick={() => selectView("pokemons")}>
+                            <ListItemButton selected={location.pathname === "/"} onClick={() => selectView("/")}>
                                 <ListItemText primary="Pokémon"/>
                             </ListItemButton>
-                            <ListItemButton selected={view === "collection"} onClick={() => selectView("collection")}>
+                            <ListItemButton selected={location.pathname === "/collection"} onClick={() => selectView("/collection")}>
                                 <ListItemText primary={userName ? `${userName}'s Collection` : "My Collection"}/>
                             </ListItemButton>
                         </List>
                     </Box>
                 </Drawer>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton color="inherit" onClick={() => setSettingsOpen(true)} aria-label="settings">
+                <IconButton color="inherit" onClick={() => navigate("/settings")} aria-label="settings">
                     <SettingsRoundedIcon/>
                 </IconButton>
-                <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)}/>
             </Toolbar>
         </AppBar>
     )

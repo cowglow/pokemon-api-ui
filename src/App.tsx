@@ -1,27 +1,45 @@
-import {useDispatch, useSelector} from "react-redux";
-import {useMediaQuery, useTheme} from "@mui/material";
-import {fetchPokemonsStart, getSelectedPokemon, setSelectedPokemon} from "./redux/reducers/pokemons.ts";
+import {useDispatch} from "react-redux";
+import {Navigate, Outlet, Route, Routes} from "react-router-dom";
+import {PropsWithChildren, useEffect} from "react";
+import {fetchPokemonsStart} from "./redux/reducers/pokemons.ts";
 import {hydrateCollection} from "./redux/reducers/collection.ts";
 import {getStoredCollection} from "./lib/collection-storage.ts";
-import {hydrateUserName} from "./redux/reducers/user.ts";
-import {getStoredUserName} from "./lib/user-storage.ts";
-import {useEffect, useState} from "react";
-import SelectedPokemon from "./components/SelectedPokemon.tsx";
-import AddToCollection from "./components/Fab/AddToCollection.tsx";
+import {hydrateSkipped, hydrateUserName, useIsOnboarded} from "./redux/reducers/user.ts";
+import {getStoredUserName, getStoredUserSkipped} from "./lib/user-storage.ts";
+import PokemonsPage from "./pages/PokemonsPage.tsx";
 import CollectionView from "./components/CollectionView.tsx";
-import NamePromptDialog from "./components/NamePromptDialog.tsx";
+import WelcomePage from "./pages/WelcomePage.tsx";
+import SettingsPage from "./pages/SettingsPage.tsx";
 import Layout from "./ui/Layout.tsx";
-import {AppView} from "./ui/Header.tsx";
 import {ContentWrapper} from "./App.Styled.ts";
-import PokemonList from "./components/PokemonList.tsx";
 import {REQUEST_LIMIT_DEFAULT} from "./lib/constants.ts";
+
+function AppShell({children}: PropsWithChildren) {
+    return (
+        <Layout>
+            <ContentWrapper>{children}</ContentWrapper>
+        </Layout>
+    )
+}
+
+function RequireOnboarding() {
+    const onboarded = useIsOnboarded()
+    if (!onboarded) return <Navigate to="/welcome" replace/>
+    return (
+        <AppShell>
+            <Outlet/>
+        </AppShell>
+    )
+}
+
+function WelcomeRoute() {
+    const onboarded = useIsOnboarded()
+    if (onboarded) return <Navigate to="/" replace/>
+    return <WelcomePage/>
+}
 
 export default function App() {
     const dispatch = useDispatch()
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-    const [view, setView] = useState<AppView>("pokemons")
-    const selectedPokemon = useSelector(getSelectedPokemon)
 
     useEffect(() => {
         dispatch(fetchPokemonsStart(REQUEST_LIMIT_DEFAULT))
@@ -35,30 +53,19 @@ export default function App() {
         dispatch(hydrateUserName(getStoredUserName()))
     }, [dispatch])
 
-    const showDetail = !isMobile || Boolean(selectedPokemon)
-    const showList = !isMobile || !selectedPokemon
+    useEffect(() => {
+        dispatch(hydrateSkipped(getStoredUserSkipped()))
+    }, [dispatch])
 
     return (
-        <Layout view={view} onViewChange={setView}>
-            <NamePromptDialog/>
-            <ContentWrapper>
-                {view === "pokemons" ? (
-                    <>
-                        <PokemonList hidden={!showList}/>
-                        {showDetail && (
-                            <>
-                                <SelectedPokemon
-                                    pokemon={selectedPokemon}
-                                    onBack={isMobile ? () => dispatch(setSelectedPokemon(null)) : undefined}
-                                />
-                                <AddToCollection pokemon={selectedPokemon}/>
-                            </>
-                        )}
-                    </>
-                ) : (
-                    <CollectionView/>
-                )}
-            </ContentWrapper>
-        </Layout>
+        <Routes>
+            <Route path="welcome" element={<WelcomeRoute/>}/>
+            <Route element={<RequireOnboarding/>}>
+                <Route index element={<PokemonsPage/>}/>
+                <Route path="collection" element={<CollectionView/>}/>
+                <Route path="settings" element={<SettingsPage/>}/>
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace/>}/>
+        </Routes>
     );
 }

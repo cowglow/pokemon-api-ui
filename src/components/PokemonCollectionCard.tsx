@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import {Box, capitalize, Chip, IconButton, Paper, Skeleton, styled, Typography} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {Pokemon} from "../types/pokemon.ts";
-import {usePokemonDetail} from "./usePokemonDetail.ts";
+import {usePokemonDetail} from "../hooks/usePokemonDetail.ts";
 import {getTypeColor} from "../lib/type-colors.ts";
 import {removeFromCollection} from "../redux/reducers/collection.ts";
 import RemoveFromCollectionDialog from "./RemoveFromCollectionDialog.tsx";

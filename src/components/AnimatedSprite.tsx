@@ -1,5 +1,5 @@
 import {Box, styled} from "@mui/material";
-import {useSpriteAnimation} from "./useSpriteAnimation.ts";
+import {useSpriteAnimation} from "../hooks/useSpriteAnimation.ts";
 
 const SpriteWrapper = styled(Box, {shouldForwardProp: (prop) => prop !== "$size"})<{ $size: number }>`
     width: ${({$size}) => $size}px;
