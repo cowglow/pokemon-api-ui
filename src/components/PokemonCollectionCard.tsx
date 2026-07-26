@@ -1,7 +1,9 @@
-import {useState} from "react";
+import {CSSProperties, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Box, capitalize, Chip, IconButton, Paper, Skeleton, styled, Typography} from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import {useSortable} from "@dnd-kit/sortable";
+import {CSS} from "@dnd-kit/utilities";
 import {Pokemon} from "../types/pokemon.ts";
 import {usePokemonDetail} from "../hooks/usePokemonDetail.ts";
 import {getTypeColor} from "../lib/type-colors.ts";
@@ -41,6 +43,15 @@ export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCa
     const [primaryType] = data?.types ?? []
     const accent = getTypeColor(primaryType ?? "")
     const hp = data?.stats.find(({name}) => name === "hp")?.baseStat
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({id})
+
+    const dragStyle: CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        touchAction: "none",
+        cursor: "grab",
+        opacity: isDragging ? 0.5 : 1
+    }
 
     const onConfirmRemove = () => {
         dispatch(removeFromCollection(id))
@@ -48,7 +59,7 @@ export default function PokemonCollectionCard({id, pokemon}: PokemonCollectionCa
     }
 
     return (
-        <CardShell elevation={3} accent={accent}>
+        <CardShell elevation={3} accent={accent} ref={setNodeRef} style={dragStyle} {...attributes} {...listeners}>
             <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}>
                     {capitalize(pokemon.name)}

@@ -24,7 +24,11 @@ const collectionSlice = createSlice({
         hydrateCollection: (state, action: PayloadAction<CollectionItem[]>) => {
             collectionAdapter.setAll(state, action.payload)
         },
-        removeFromCollection: collectionAdapter.removeOne
+        removeFromCollection: collectionAdapter.removeOne,
+        clearCollection: collectionAdapter.removeAll,
+        reorderCollection: (state, action: PayloadAction<string[]>) => {
+            state.ids = action.payload
+        }
     }
 })
 
@@ -72,5 +76,11 @@ export function useCollectedNames() {
     return useSelector(getCollectedNames)
 }
 
-export const {addToCollection, hydrateCollection, removeFromCollection} = collectionSlice.actions
+export const {
+    addToCollection,
+    hydrateCollection,
+    removeFromCollection,
+    clearCollection,
+    reorderCollection
+} = collectionSlice.actions
 export default collectionSlice.reducer

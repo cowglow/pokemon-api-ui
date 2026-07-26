@@ -10,7 +10,11 @@ export function getStoredUserName(): string | null {
 }
 
 export function setStoredUserName(name: string) {
-    window.localStorage.setItem(USER_NAME_KEY, name)
+    try {
+        window.localStorage.setItem(USER_NAME_KEY, name)
+    } catch (error) {
+        console.warn("Failed to persist user name to localStorage", error)
+    }
 }
 
 export function getStoredUserSkipped(): boolean {
@@ -22,5 +26,9 @@ export function getStoredUserSkipped(): boolean {
 }
 
 export function setStoredUserSkipped() {
-    window.localStorage.setItem(USER_SKIPPED_KEY, "1")
+    try {
+        window.localStorage.setItem(USER_SKIPPED_KEY, "1")
+    } catch (error) {
+        console.warn("Failed to persist skipped onboarding to localStorage", error)
+    }
 }

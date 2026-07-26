@@ -1,2 +1,1 @@
-export const REQUEST_LIMIT_DEFAULT = 200
-export const REQUEST_LIMIT_MAX = 1351
+export const REQUEST_LIMIT_DEFAULT = 1351

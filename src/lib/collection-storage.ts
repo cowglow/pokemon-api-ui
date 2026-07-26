@@ -12,5 +12,9 @@ export function getStoredCollection(): CollectionItem[] {
 }
 
 export function setStoredCollection(items: CollectionItem[]) {
-    window.localStorage.setItem(COLLECTION_KEY, JSON.stringify(items))
+    try {
+        window.localStorage.setItem(COLLECTION_KEY, JSON.stringify(items))
+    } catch (error) {
+        console.warn("Failed to persist collection to localStorage", error)
+    }
 }

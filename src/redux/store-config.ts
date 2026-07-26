@@ -5,7 +5,14 @@ import collectionReducers from "./reducers/collection.ts";
 import userReducers from "./reducers/user.ts";
 import {watchSaga} from "./saga.ts";
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({
+    onError: (error, {sagaStack}) => {
+        // Without this, an uncaught error in any watcher (e.g. a localStorage write
+        // throwing QuotaExceededError) crashes the entire saga middleware, silently
+        // killing every future fetch/sync for the rest of the page's lifetime.
+        console.error("Uncaught error in saga, saga middleware may be unable to recover", error, sagaStack)
+    }
+});
 
 const rootReducer = combineReducers({
     pokemons: pokemonReducers,

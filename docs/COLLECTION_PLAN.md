@@ -94,7 +94,7 @@ still stands, only the editing angle is gone).
 
 ## Phase 4 - "My Collection" view (done)
 
-- `CollectionView.tsx`: empty state is a centered `Paper` prompting the
+- `CollectionPage.tsx`: empty state is a centered `Paper` prompting the
   user to add pokémon from the list; populated state is a centered,
   wrapping flex grid of `PokemonCollectionCard.tsx`.
 - Each card: name + HP (from `stats`) top row, sprite art (`avatar`) on
@@ -216,7 +216,7 @@ Several small additions once every phase above had shipped:
   no more `onAddToCollection`/`alreadyInCollection` plumbing.
   `PokemonHeader` dropped the star/dialog entirely.
   `PokemonCollectionCard` gained its own filled-star remove button (now
-  takes an `id` prop from `CollectionView`'s map, dispatching
+  takes an `id` prop from `CollectionPage`'s map, dispatching
   `removeFromCollection(id)` directly - no name-based lookup needed
   since the id is already in hand) so pokémon can be removed straight
   from the "My Collection" grid instead of needing to reselect them in

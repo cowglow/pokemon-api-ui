@@ -29,7 +29,7 @@ before touching layout code, same as `docs/COLLECTION_PLAN.md` was.
 - **Header/nav is already in reasonable shape** - the `AppBar` uses a
   hamburger `IconButton` + `Menu` rather than persistent nav links, and
   `SettingsDialog` is a modal, so neither needs rework for mobile.
-- **`CollectionView`'s card grid already wraps** (`flexWrap: "wrap"`,
+- **`CollectionPage`'s card grid already wraps** (`flexWrap: "wrap"`,
   centered) - likely fine as-is, but worth confirming a single 240px
   card plus padding still fits a 320px-wide viewport (iPhone SE class)
   without horizontal scroll.
@@ -91,7 +91,7 @@ app already uses elsewhere.
   the small `IconButton`s in `PokemonCollectionCard` and the
   collection-only `ToggleButton` are all fairly compact and may need a
   touch-friendly size bump.
-- Confirm `CollectionView`'s card grid at a 320px viewport width.
+- Confirm `CollectionPage`'s card grid at a 320px viewport width.
 
 ## Decided (2026-07-26)
 

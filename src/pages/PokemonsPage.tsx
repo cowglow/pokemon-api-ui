@@ -4,6 +4,7 @@ import {getSelectedPokemon, setSelectedPokemon} from "../redux/reducers/pokemons
 import SelectedPokemon from "../components/SelectedPokemon.tsx";
 import AddToCollection from "../components/Fab/AddToCollection.tsx";
 import PokemonList from "../components/PokemonList.tsx";
+import OnboardingDialog from "../components/OnboardingDialog.tsx";
 
 export default function PokemonsPage() {
     const dispatch = useDispatch()
@@ -16,6 +17,7 @@ export default function PokemonsPage() {
 
     return (
         <>
+            <OnboardingDialog/>
             <PokemonList hidden={!showList}/>
             {showDetail && (
                 <>

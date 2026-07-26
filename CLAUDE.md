@@ -64,7 +64,7 @@ Selectors/hooks live next to each slice (`src/redux/reducers/pokemons.ts`, `coll
 | Path | Purpose |
 |---|---|
 | `src/redux/` | Store config, root saga, `saga-handlers/` (one per side-effect), `saga-requests/` (plain `fetch` wrappers, no timing/delay logic), `reducers/` (slice + selectors + hooks together) |
-| `src/components/` | Feature components. `PokemonForm`/`PokemonDetailTabs`/`PokemonHeader` render one selected pokemon's read-only detail tabs (Overview, Abilities & Types, Cries, Stats, Moves); `CollectionView`/`PokemonCollectionCard` render the saved-pokemon grid |
+| `src/components/` | Feature components. `PokemonForm`/`PokemonDetailTabs`/`PokemonHeader` render one selected pokemon's read-only detail tabs (Overview, Abilities & Types, Cries, Stats, Moves); `CollectionPage`/`PokemonCollectionCard` render the saved-pokemon grid |
 | `src/ui/` | Layout shells (`Layout`, `Header` — nav menu + settings dialog) |
 | `src/lib/` | `create-pokemon.ts` (raw API response → app `Pokemon` shape), `PokemonType.ts`, `url-param.ts`, `collection-storage.ts`, `type-colors.ts`, `format-name.ts`, `random.ts`, `sprite-frames.ts`, `constants.ts` |
 | `src/types/` | The list-item `Pokemon` type (`{name, url}`) — distinct from `lib/PokemonType.ts`'s fully-fetched detail `Pokemon` shape |

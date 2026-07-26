@@ -1,14 +1,17 @@
-import {Badge, Box, ListItemIcon} from "@mui/material";
+import {Badge, Box, ListItemIcon, useTheme} from "@mui/material";
+import {getPokemonIdFromUrl, getPokemonSpriteUrl} from "../lib/sprite-url.ts";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
 interface PokemonListIconProps {
-    pokemonIndex: number;
+    url: string;
     label: string
     collected?: boolean
 }
 
-export default function PokemonListIcon({pokemonIndex, label, collected}: PokemonListIconProps) {
-    const pokemonIconUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIndex}.png`
+export default function PokemonListIcon({url, label, collected}: PokemonListIconProps) {
+    const pokemonIconUrl = getPokemonSpriteUrl(getPokemonIdFromUrl(url))
+    const theme = useTheme()
+    const pokemonSize = theme.spacing(8)
     return (
         <ListItemIcon>
             <Badge
@@ -18,8 +21,8 @@ export default function PokemonListIcon({pokemonIndex, label, collected}: Pokemo
                 invisible={!collected}
             >
                 <Box component="img" src={pokemonIconUrl} alt={label}
-                     sx={{width: 40, height: 40, objectFit: "contain"}}/>
+                     sx={{width: pokemonSize, height: pokemonSize, objectFit: "contain"}}/>
             </Badge>
         </ListItemIcon>
-    )
+    );
 }

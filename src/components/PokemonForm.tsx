@@ -7,6 +7,7 @@ import AbilitiesAndTypes from "./AbilitiesAndTypes.tsx";
 import Cries from "./Cries.tsx";
 import Stats from "./Stats.tsx";
 import Moves from "./Moves.tsx";
+import PokemonSpriteGallery from "./PokemonSpriteGallery.tsx";
 
 const StyledPokemonForm = styled(StyledForm)`
     width: 100%;
@@ -61,6 +62,10 @@ export default function PokemonForm({name: pokemonName, url, onBack}: PokemonFor
                                 <AbilitiesAndTypes types={cachedDetails.types}
                                                    abilities={cachedDetails.abilities}/>
                             )
+                        },
+                        {
+                            label: "Gallery",
+                            content: <PokemonSpriteGallery spriteFrames={cachedDetails.spriteFrames}/>
                         },
                         {
                             label: "Cries",
